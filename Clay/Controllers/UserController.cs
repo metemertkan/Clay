@@ -28,14 +28,17 @@ namespace Clay.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetMyLocks()
+        public IActionResult GetMyLocks(PagedModel pagedModel)
         {
             var loggedInUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
 
             if (loggedInUser == null)
                 return Unauthorized();
 
-            return Json(_lockService.GetByUserId(loggedInUser.Id));
+            if (pagedModel == null)
+                pagedModel = new PagedModel();
+
+            return Json(_lockService.GetByUserId(loggedInUser.Id, pagedModel));
         }
 
         [HttpGet]
@@ -53,7 +56,7 @@ namespace Clay.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetLockHistory(Guid lockId)
+        public IActionResult GetLockHistory(Guid lockId, PagedModel pagedModel)
         {
             var loggedInUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
 
@@ -62,7 +65,11 @@ namespace Clay.Controllers
 
             if (!CanUserAccess(loggedInUser, lockId))
                 return Unauthorized();
-            return Json(_attemptService.GetLockAttempts(lockId));
+
+            if (pagedModel == null)
+                pagedModel = new PagedModel();
+
+            return Json(_attemptService.GetLockAttempts(lockId, pagedModel));
         }
 
         [HttpPost]

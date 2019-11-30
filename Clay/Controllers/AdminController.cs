@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Clay.Data;
 using Clay.Managers.Interfaces;
 using Clay.Models.Domain;
 using Clay.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Clay.Controllers
 {
@@ -13,23 +15,25 @@ namespace Clay.Controllers
     public class AdminController : Controller
     {
         private readonly ILockService _lockService;
-        private readonly IUserLockService _userLockService;
         private readonly IAttemptService _attemptService;
         private readonly IUserLockManager _userLockManager;
         private readonly ILogger<AdminController> _log;
 
-        public AdminController(ILockService lockService, IUserLockService userLockService, IAttemptService attemptService, ILogger<AdminController> log)
+        public AdminController(ILockService lockService, IAttemptService attemptService, ILogger<AdminController> log, IUserLockManager userLockManager)
         {
             _lockService = lockService;
-            _userLockService = userLockService;
             _attemptService = attemptService;
             _log = log;
+            _userLockManager = userLockManager;
         }
 
         [HttpGet]
-        public List<Lock> GetLocks()
+        public IActionResult GetLocks(PagedModel pagedModel)
         {
-            return _lockService.GetAll();
+            if (pagedModel == null)
+                pagedModel = new PagedModel();
+
+            return Ok(_lockService.GetAll(pagedModel));
         }
 
         [HttpPost]
@@ -59,7 +63,7 @@ namespace Clay.Controllers
         {
             try
             {
-                _userLockManager.UnAssign(userId,lockId);
+                _userLockManager.UnAssign(userId, lockId);
             }
             catch (Exception e)
             {
@@ -70,9 +74,12 @@ namespace Clay.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllAttempts()
+        public IActionResult GetAllAttempts(PagedModel pagedModel)
         {
-            return Ok(_attemptService.GetAttempts());
+            if(pagedModel==null)
+                pagedModel=new PagedModel();
+
+            return Ok(_attemptService.GetAttempts(pagedModel));
         }
     }
 }
