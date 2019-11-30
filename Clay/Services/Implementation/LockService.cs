@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Clay.Models.Domain;
 using Clay.Repositories.Interfaces;
+using Clay.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
-namespace Clay.Services
+namespace Clay.Services.Implementation
 {
-    public class LockService
+    public class LockService : ILockService
     {
         private readonly ILockRepository _lockRepository;
-
-        public LockService(ILockRepository lockRepository)
+        private readonly IUserLockRepository _userLockRepository;
+        public LockService(ILockRepository lockRepository, IUserLockRepository userLockRepository)
         {
             _lockRepository = lockRepository;
+            _userLockRepository = userLockRepository;
         }
 
         public List<Lock> GetAll()
@@ -27,6 +30,25 @@ namespace Clay.Services
         public Lock GetByName(string name)
         {
             return _lockRepository.Locks.FirstOrDefault(l => string.Equals(l.Name, name));
+        }
+
+        public List<Lock> GetByUserId(string userId)
+        {
+            var userLocks = _userLockRepository.UserLocks.Where(ul => ul.UserId.Equals(userId)).Include(ul=>ul.Lock).ToList();
+
+            var list = new List<Lock>();
+            foreach (var userLock in userLocks)
+            {
+                list.Add(new Lock
+                {
+                    Id = userLock.LockId,
+                    Name = userLock.Lock.Name,
+                    IsLocked = userLock.Lock.IsLocked,
+                    Place = userLock.Lock.Place
+                });
+            }
+
+            return list;
         }
 
         public void SaveLock(Lock lockModel)

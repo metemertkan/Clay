@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Clay.Models.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,9 +33,29 @@ namespace Clay.Data
                     SeedRoles();
                     SeedUsers();
                     SeedLocks(context);
+                    SeedUserLocks(context);
                 }
             }
         }
+
+        private void SeedUserLocks(WebDbContext context)
+        {
+            var user1 = userManager.FindByEmailAsync("user1@user.com").Result;
+            var lockList = context.Locks.Take(5).ToList();
+
+            if (user1 == null)
+                return;
+            foreach (var @lock in lockList)
+            {
+                context.Add(new UserLock
+                {
+                    LockId = @lock.Id,
+                    UserId = user1.Id
+                });
+            }
+            context.SaveChanges();
+        }
+
 
         private void SeedRoles()
         {

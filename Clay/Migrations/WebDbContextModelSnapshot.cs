@@ -33,7 +33,7 @@ namespace Clay.Migrations
 
                     b.Property<DateTime>("Time");
 
-                    b.Property<Guid>("UserId");
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
 
@@ -54,6 +54,19 @@ namespace Clay.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Locks");
+                });
+
+            modelBuilder.Entity("Clay.Models.Domain.UserLock", b =>
+                {
+                    b.Property<Guid>("LockId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("LockId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserLock");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -110,6 +123,9 @@ namespace Clay.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
                     b.Property<string>("Email")
                         .HasMaxLength(256);
 
@@ -149,6 +165,8 @@ namespace Clay.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -215,6 +233,29 @@ namespace Clay.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Clay.Models.Domain.AppIdentityUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+
+                    b.ToTable("AppIdentityUser");
+
+                    b.HasDiscriminator().HasValue("AppIdentityUser");
+                });
+
+            modelBuilder.Entity("Clay.Models.Domain.UserLock", b =>
+                {
+                    b.HasOne("Clay.Models.Domain.Lock", "Lock")
+                        .WithMany("UserLockCollection")
+                        .HasForeignKey("LockId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Clay.Models.Domain.AppIdentityUser", "User")
+                        .WithMany("UserLockCollection")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

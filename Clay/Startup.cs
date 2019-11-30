@@ -6,6 +6,8 @@ using Clay.Data;
 using Clay.Models.Domain;
 using Clay.Repositories.Implementations;
 using Clay.Repositories.Interfaces;
+using Clay.Services.Implementation;
+using Clay.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -43,13 +45,18 @@ namespace Clay
 
             services.AddTransient<IAttemptRepository, EFAttemptRepository>();
             services.AddTransient<ILockRepository, EFLockRepository>();
+            services.AddTransient<IUserLockRepository, EFUserLockRepository>();
+            services.AddTransient<ILockService, LockService>();
+            services.AddTransient<IAttemptService, AttemptService>();
+            services.AddTransient<IUserLockService, UserLockService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddEntityFrameworkSqlServer()
                 .AddDbContext<WebDbContext>
                     (opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            
+
+            services.AddAuthentication();
 
         }
 
@@ -69,6 +76,8 @@ namespace Clay
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

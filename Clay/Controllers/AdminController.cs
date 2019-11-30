@@ -1,48 +1,55 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Clay.Models.Domain;
+using Clay.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Clay.Controllers
 {
-    [Route("api/admin")]
-    [ApiController]
     public class AdminController : Controller
     {
+        private readonly ILockService _lockService;
+        private readonly IUserLockService _userLockService;
+        private readonly IAttemptService _attemptService;
+
+        public AdminController(ILockService lockService, IUserLockService userLockService, IAttemptService attemptService)
+        {
+            _lockService = lockService;
+            _userLockService = userLockService;
+            _attemptService = attemptService;
+        }
+
         [HttpGet]
         public List<Lock> GetLocks()
         {
-            return null;
+            return _lockService.GetAll();
         }
 
         [HttpPost]
-        public void CreateLock()
+        public IActionResult CreateLock(Lock lockModel)
         {
-
+            _lockService.SaveLock(lockModel);
+            return Ok();
         }
 
         [HttpPost]
-        public void DeleteLock()
+        public IActionResult AssignUserToLock(string userId, Guid lockId)
         {
-
-        }
-
-
-        [HttpPost]
-        public void AssignUserToLock()
-        {
-
+            _userLockService.SaveUserLock(userId, lockId);
+            return Ok();
         }
 
         [HttpPost]
-        public void UnAssignUserFromLock()
+        public IActionResult UnAssignUserFromLock(string userId, Guid lockId)
         {
-
+            _userLockService.RemoveUserLock(userId, lockId);
+            return Ok();
         }
 
         [HttpGet]
-        public void GetAllAttempts()
+        public IActionResult GetAllAttempts()
         {
-
+            return Ok(_attemptService.GetAttempts());
         }
     }
 }

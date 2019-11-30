@@ -40,7 +40,8 @@ namespace Clay.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    Discriminator = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -54,7 +55,7 @@ namespace Clay.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     LockId = table.Column<Guid>(nullable: false),
-                    UserId = table.Column<Guid>(nullable: false),
+                    UserId = table.Column<string>(nullable: true),
                     Action = table.Column<string>(nullable: true),
                     Time = table.Column<DateTime>(nullable: false),
                     IsSuccessful = table.Column<bool>(nullable: false)
@@ -184,6 +185,30 @@ namespace Clay.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserLock",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(nullable: false),
+                    LockId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserLock", x => new { x.LockId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_UserLock_Locks_LockId",
+                        column: x => x.LockId,
+                        principalTable: "Locks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserLock_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -222,6 +247,11 @@ namespace Clay.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserLock_UserId",
+                table: "UserLock",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -245,10 +275,13 @@ namespace Clay.Migrations
                 name: "Attempts");
 
             migrationBuilder.DropTable(
-                name: "Locks");
+                name: "UserLock");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Locks");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

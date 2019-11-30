@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Clay.Models.Domain;
 using Clay.Repositories.Interfaces;
+using Clay.Services.Interfaces;
 
-namespace Clay.Services
+namespace Clay.Services.Implementation
 {
-    public class AttemptService
+    public class AttemptService : IAttemptService
     {
         private readonly IAttemptRepository _attemptRepository;
 
@@ -14,7 +15,7 @@ namespace Clay.Services
         {
             _attemptRepository = attemptRepository;
         }
-        public List<Attempt> GetUserAttempts(Guid userId)
+        public List<Attempt> GetUserAttempts(string userId)
         {
             return _attemptRepository.Attempts.Where(a => a.UserId == userId).ToList();
         }
