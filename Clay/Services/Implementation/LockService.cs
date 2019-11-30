@@ -34,7 +34,7 @@ namespace Clay.Services.Implementation
 
         public List<Lock> GetByUserId(string userId)
         {
-            var userLocks = _userLockRepository.UserLocks.Where(ul => ul.UserId.Equals(userId)).Include(ul=>ul.Lock).ToList();
+            var userLocks = _userLockRepository.UserLocks.Where(ul => ul.UserId.Equals(userId)).Include(ul => ul.Lock).ToList();
 
             var list = new List<Lock>();
             foreach (var userLock in userLocks)
@@ -71,17 +71,13 @@ namespace Clay.Services.Implementation
 
             var foundLock = _lockRepository.Locks.FirstOrDefault(l => l.Id.Equals(id));
             if (foundLock == null)
-                return;
+                throw new Exception("Lock not found!");
 
             if (foundLock.IsLocked == @lock)
-            {
-                //return info already same
-            }
-            else
-            {
-                foundLock.IsLocked = @lock;
-                _lockRepository.SaveLock(foundLock);
-            }
+                throw new Exception("Lock is already in that state");
+
+            foundLock.IsLocked = @lock;
+            _lockRepository.SaveLock(foundLock);
         }
     }
 }

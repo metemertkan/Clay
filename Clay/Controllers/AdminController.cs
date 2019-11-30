@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using Clay.Models.Domain;
 using Clay.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Clay.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class AdminController : Controller
     {
         private readonly ILockService _lockService;
@@ -26,7 +28,7 @@ namespace Clay.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateLock(Lock lockModel)
+        public IActionResult SaveLock(Lock lockModel)
         {
             _lockService.SaveLock(lockModel);
             return Ok();

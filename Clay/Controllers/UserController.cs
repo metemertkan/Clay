@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Clay.Constants;
 using Clay.Models.Domain;
 using Clay.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Clay.Controllers
 {
-    //[Authorize(Roles = "User,Administrator")]
+    [Authorize(Roles = "User,Administrator")]
     public class UserController : Controller
     {
         private readonly UserManager<AppIdentityUser> _userManager;
@@ -27,6 +28,10 @@ namespace Clay.Controllers
         public IActionResult GetMyLocks()
         {
             var loggedInUser = _userManager.GetUserAsync(HttpContext.User).Result;
+
+            if (loggedInUser == null)
+                return Unauthorized();
+
             return Json(_lockService.GetByUserId(loggedInUser.Id));
         }
 
@@ -34,13 +39,22 @@ namespace Clay.Controllers
         public IActionResult GetMyHistory()
         {
             var loggedInUser = _userManager.GetUserAsync(HttpContext.User).Result;
+
+            if (loggedInUser == null)
+                return Unauthorized();
+
             return Json(_attemptService.GetUserAttempts(loggedInUser.Id));
         }
 
         [HttpGet]
         public IActionResult GetLockHistory(Guid lockId)
         {
-            if (!CanUserAccess(lockId))
+            var loggedInUser = _userManager.GetUserAsync(HttpContext.User).Result;
+
+            if (loggedInUser == null)
+                return Unauthorized();
+
+            if (!CanUserAccess(loggedInUser, lockId))
                 return Unauthorized();
             return Json(_attemptService.GetLockAttempts(lockId));
         }
@@ -48,24 +62,75 @@ namespace Clay.Controllers
         [HttpPost]
         public IActionResult Lock(Guid lockId)
         {
-            if (!CanUserAccess(lockId))
+            var loggedInUser = _userManager.GetUserAsync(HttpContext.User).Result;
+
+            if (loggedInUser == null)
                 return Unauthorized();
-            _lockService.Lock(lockId);
+
+            if (!CanUserAccess(loggedInUser, lockId))
+                return Unauthorized();
+
+            var attempt = new Attempt
+            {
+                Action = Actions.LOCK,
+                IsSuccessful = true,
+                LockId = lockId,
+                Time = DateTime.Now,
+                UserId = loggedInUser.Id
+            };
+
+            try
+            {
+                _lockService.Lock(lockId);
+                _attemptService.CreateAttempt(attempt);
+            }
+            catch (Exception e)
+            {
+                attempt.IsSuccessful = false;
+                _attemptService.CreateAttempt(attempt);
+                return BadRequest(e.Message);
+            }
+
             return Ok();
         }
 
         [HttpPost]
         public IActionResult UnLock(Guid lockId)
         {
-            if (!CanUserAccess(lockId))
+            var loggedInUser = _userManager.GetUserAsync(HttpContext.User).Result;
+
+            if (loggedInUser == null)
                 return Unauthorized();
-            _lockService.UnLock(lockId);
+
+            if (!CanUserAccess(loggedInUser, lockId))
+                return Unauthorized();
+
+            var attempt = new Attempt
+            {
+                Action = Actions.UNLOCK,
+                IsSuccessful = true,
+                LockId = lockId,
+                Time = DateTime.Now,
+                UserId = loggedInUser.Id
+            };
+
+            try
+            {
+                _lockService.UnLock(lockId);
+                _attemptService.CreateAttempt(attempt);
+            }
+            catch (Exception e)
+            {
+                attempt.IsSuccessful = false;
+                _attemptService.CreateAttempt(attempt);
+                return BadRequest(e.Message);
+            }
+
             return Ok();
         }
 
-        private bool CanUserAccess(Guid lockId)
+        private bool CanUserAccess(AppIdentityUser loggedInUser, Guid lockId)
         {
-            var loggedInUser = _userManager.GetUserAsync(HttpContext.User).Result;
             return _userLockService.CanUserAccess(loggedInUser.Id, lockId);
         }
     }
