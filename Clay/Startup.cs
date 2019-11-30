@@ -1,6 +1,8 @@
 ﻿using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Clay.Data;
+using Clay.Managers.Implementations;
+using Clay.Managers.Interfaces;
 using Clay.Models.Domain;
 using Clay.Repositories.Implementations;
 using Clay.Repositories.Interfaces;
@@ -48,6 +50,7 @@ namespace Clay
             services.AddTransient<ILockService, LockService>();
             services.AddTransient<IAttemptService, AttemptService>();
             services.AddTransient<IUserLockService, UserLockService>();
+            services.AddTransient<IUserLockManager, UserLockManager>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
@@ -57,7 +60,7 @@ namespace Clay
 
             var key = Configuration.GetSection("Jwt").GetSection("Key").Value;
             var issuer = Configuration.GetSection("Jwt").GetSection("Issuer").Value;
-            
+
             services.AddAuthentication(x =>
                     {
                         x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -81,7 +84,7 @@ namespace Clay
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -92,6 +95,8 @@ namespace Clay
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            loggerFactory.AddFile("Logs/clay-{Date}.txt");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

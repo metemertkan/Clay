@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Clay.Constants;
+using Clay.Managers.Interfaces;
 using Clay.Models.Domain;
 using Clay.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -15,13 +16,14 @@ namespace Clay.Controllers
         private readonly UserManager<AppIdentityUser> _userManager;
         private readonly ILockService _lockService;
         private readonly IAttemptService _attemptService;
-        private readonly IUserLockService _userLockService;
-        public UserController(UserManager<AppIdentityUser> userManager, ILockService lockService, IAttemptService attemptService, IUserLockService userLockService)
+        private readonly IUserLockManager _userLockManager;
+
+        public UserController(UserManager<AppIdentityUser> userManager, ILockService lockService, IAttemptService attemptService, IUserLockService userLockService, IUserLockManager userLockManager)
         {
             _userManager = userManager;
             _lockService = lockService;
             _attemptService = attemptService;
-            _userLockService = userLockService;
+            _userLockManager = userLockManager;
         }
 
         [HttpGet]
@@ -82,7 +84,6 @@ namespace Clay.Controllers
             try
             {
                 _lockService.Lock(lockId);
-                _attemptService.CreateAttempt(attempt);
             }
             catch (Exception e)
             {
@@ -90,6 +91,8 @@ namespace Clay.Controllers
                 _attemptService.CreateAttempt(attempt);
                 return BadRequest(e.Message);
             }
+
+            _attemptService.CreateAttempt(attempt);
 
             return Ok();
         }
@@ -117,7 +120,6 @@ namespace Clay.Controllers
             try
             {
                 _lockService.UnLock(lockId);
-                _attemptService.CreateAttempt(attempt);
             }
             catch (Exception e)
             {
@@ -125,13 +127,14 @@ namespace Clay.Controllers
                 _attemptService.CreateAttempt(attempt);
                 return BadRequest(e.Message);
             }
+            _attemptService.CreateAttempt(attempt);
 
             return Ok();
         }
 
         private bool CanUserAccess(AppIdentityUser loggedInUser, Guid lockId)
         {
-            return _userLockService.CanUserAccess(loggedInUser.Id, lockId);
+            return _userLockManager.CanAccess(loggedInUser.Id, lockId);
         }
     }
 }

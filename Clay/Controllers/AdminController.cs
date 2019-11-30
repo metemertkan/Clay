@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Clay.Managers.Interfaces;
 using Clay.Models.Domain;
 using Clay.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Clay.Controllers
 {
@@ -13,12 +15,15 @@ namespace Clay.Controllers
         private readonly ILockService _lockService;
         private readonly IUserLockService _userLockService;
         private readonly IAttemptService _attemptService;
+        private readonly IUserLockManager _userLockManager;
+        private readonly ILogger<AdminController> _log;
 
-        public AdminController(ILockService lockService, IUserLockService userLockService, IAttemptService attemptService)
+        public AdminController(ILockService lockService, IUserLockService userLockService, IAttemptService attemptService, ILogger<AdminController> log)
         {
             _lockService = lockService;
             _userLockService = userLockService;
             _attemptService = attemptService;
+            _log = log;
         }
 
         [HttpGet]
@@ -37,14 +42,30 @@ namespace Clay.Controllers
         [HttpPost]
         public IActionResult AssignUserToLock(string userId, Guid lockId)
         {
-            _userLockService.SaveUserLock(userId, lockId);
+            try
+            {
+                _userLockManager.Assign(userId, lockId);
+            }
+            catch (Exception e)
+            {
+                _log.LogError($"Something went wrong: {e.Message}");
+                return StatusCode(500);
+            }
             return Ok();
         }
 
         [HttpPost]
         public IActionResult UnAssignUserFromLock(string userId, Guid lockId)
         {
-            _userLockService.RemoveUserLock(userId, lockId);
+            try
+            {
+                _userLockManager.UnAssign(userId,lockId);
+            }
+            catch (Exception e)
+            {
+                _log.LogError($"Something went wrong: {e.Message}");
+                return StatusCode(500);
+            }
             return Ok();
         }
 

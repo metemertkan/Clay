@@ -1,0 +1,129 @@
+2019-11-30T20:37:18.3685726+03:00  [INF] Entity Framework Core "2.1.11-servicing-32099" initialized '"WebDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None" (9958f5bb)
+2019-11-30T20:37:19.0481332+03:00  [INF] Executed DbCommand ("328"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE') SELECT 1 ELSE SELECT 0" (0723d8ff)
+2019-11-30T20:37:19.6422448+03:00 0HLRLNFPH0FMO:00000001 [INF] Request starting HTTP/1.1 DEBUG http://localhost:51215/  0 (ca22a1cb)
+2019-11-30T20:37:19.6422465+03:00 0HLRLNFPH0FMN:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:44332/   (ca22a1cb)
+2019-11-30T20:37:19.7737417+03:00 0HLRLNFPH0FMO:00000001 [INF] Request finished in 129.5368ms 200  (791a596a)
+2019-11-30T20:37:20.2484529+03:00 0HLRLNFPH0FMN:00000001 [INF] Route matched with "{action = \"Index\", controller = \"Home\"}". Executing controller action with signature "Microsoft.AspNetCore.Mvc.IActionResult Index()" on controller "Clay.Controllers.HomeController" ("Clay"). (122b2fdf)
+2019-11-30T20:37:20.2954608+03:00 0HLRLNFPH0FMN:00000001 [INF] Executing action method "Clay.Controllers.HomeController.Index (Clay)" - Validation state: Valid (dad538d7)
+2019-11-30T20:37:20.3140718+03:00 0HLRLNFPH0FMN:00000001 [INF] Executed action method "Clay.Controllers.HomeController.Index (Clay)", returned result "Microsoft.AspNetCore.Mvc.OkObjectResult" in 0.6672ms. (50a9e262)
+2019-11-30T20:37:20.3389889+03:00 0HLRLNFPH0FMN:00000001 [INF] Executing ObjectResult, writing value of type '"System.String"'. (8a1b66c8)
+2019-11-30T20:37:20.3605434+03:00 0HLRLNFPH0FMN:00000001 [INF] Executed action "Clay.Controllers.HomeController.Index (Clay)" in 98.8736ms (afa2e885)
+2019-11-30T20:37:20.3787621+03:00 0HLRLNFPH0FMN:00000001 [INF] Request finished in 743.0765ms 200 text/plain; charset=utf-8 (791a596a)
+2019-11-30T20:37:45.7019309+03:00 0HLRLNFPH0FMO:00000002 [INF] Request starting HTTP/1.1 POST http://localhost:44332/Account/Login multipart/form-data; boundary=--------------------------100983920465031863613583 283 (ca22a1cb)
+2019-11-30T20:37:45.7750468+03:00 0HLRLNFPH0FMO:00000002 [INF] Route matched with "{action = \"Login\", controller = \"Account\"}". Executing controller action with signature "Microsoft.AspNetCore.Mvc.IActionResult Login(Clay.Models.Account.LoginModel)" on controller "Clay.Controllers.AccountController" ("Clay"). (122b2fdf)
+2019-11-30T20:37:45.9770584+03:00 0HLRLNFPH0FMO:00000002 [INF] Executing action method "Clay.Controllers.AccountController.Login (Clay)" - Validation state: Valid (dad538d7)
+2019-11-30T20:37:45.9981562+03:00 0HLRLNFPH0FMO:00000002 [INF] Entity Framework Core "2.1.11-servicing-32099" initialized '"WebDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None" (9958f5bb)
+2019-11-30T20:37:46.4345730+03:00 0HLRLNFPH0FMO:00000002 [INF] Executed DbCommand ("61"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Discriminator], [u].[Email], [u].[EmailConfirmed], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE ([u].[Discriminator] = N'AppIdentityUser') AND ([u].[NormalizedUserName] = @__normalizedUserName_0)" (0723d8ff)
+2019-11-30T20:37:46.8217434+03:00 0HLRLNFPH0FMO:00000002 [INF] Executed DbCommand ("4"ms) [Parameters=["@__user_Id_0='?' (Size = 450)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [uc].[Id], [uc].[ClaimType], [uc].[ClaimValue], [uc].[UserId]
+FROM [AspNetUserClaims] AS [uc]
+WHERE [uc].[UserId] = @__user_Id_0" (0723d8ff)
+2019-11-30T20:37:46.9619163+03:00 0HLRLNFPH0FMO:00000002 [INF] Executed DbCommand ("17"ms) [Parameters=["@__userId_0='?' (Size = 450)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [role].[Name]
+FROM [AspNetUserRoles] AS [userRole]
+INNER JOIN [AspNetRoles] AS [role] ON [userRole].[RoleId] = [role].[Id]
+WHERE [userRole].[UserId] = @__userId_0" (0723d8ff)
+2019-11-30T20:37:47.0060241+03:00 0HLRLNFPH0FMO:00000002 [INF] Executed DbCommand ("8"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [r].[Id], [r].[ConcurrencyStamp], [r].[Name], [r].[NormalizedName]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedName_0" (0723d8ff)
+2019-11-30T20:37:47.0598000+03:00 0HLRLNFPH0FMO:00000002 [INF] Executed DbCommand ("4"ms) [Parameters=["@__role_Id_0='?' (Size = 450)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [rc].[ClaimType], [rc].[ClaimValue]
+FROM [AspNetRoleClaims] AS [rc]
+WHERE [rc].[RoleId] = @__role_Id_0" (0723d8ff)
+2019-11-30T20:37:47.1603745+03:00 0HLRLNFPH0FMO:00000002 [INF] AuthenticationScheme: "Identity.Application" signed in. (c66dd7e7)
+2019-11-30T20:37:47.1763829+03:00 0HLRLNFPH0FMO:00000002 [INF] Executed DbCommand ("2"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Discriminator], [u].[Email], [u].[EmailConfirmed], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE ([u].[Discriminator] = N'AppIdentityUser') AND ([u].[NormalizedUserName] = @__normalizedUserName_0)" (0723d8ff)
+2019-11-30T20:37:47.1866240+03:00 0HLRLNFPH0FMO:00000002 [INF] Executed DbCommand ("2"ms) [Parameters=["@__userId_0='?' (Size = 450)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [role].[Name]
+FROM [AspNetUserRoles] AS [userRole]
+INNER JOIN [AspNetRoles] AS [role] ON [userRole].[RoleId] = [role].[Id]
+WHERE [userRole].[UserId] = @__userId_0" (0723d8ff)
+2019-11-30T20:37:47.3630152+03:00 0HLRLNFPH0FMO:00000002 [INF] Executed action method "Clay.Controllers.AccountController.Login (Clay)", returned result "Microsoft.AspNetCore.Mvc.OkObjectResult" in 1380.8525ms. (50a9e262)
+2019-11-30T20:37:47.3704486+03:00 0HLRLNFPH0FMO:00000002 [INF] Executing ObjectResult, writing value of type '"<>f__AnonymousType0`3[[System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"'. (8a1b66c8)
+2019-11-30T20:37:47.4164288+03:00 0HLRLNFPH0FMO:00000002 [INF] Executed action "Clay.Controllers.AccountController.Login (Clay)" in 1634.2946ms (afa2e885)
+2019-11-30T20:37:47.4211590+03:00 0HLRLNFPH0FMO:00000002 [INF] Request finished in 1720.0298ms 200 application/json; charset=utf-8 (791a596a)
+2019-11-30T20:38:05.2581772+03:00 0HLRLNFPH0FMN:00000002 [INF] Request starting HTTP/1.1 POST http://localhost:44332/User/Lock multipart/form-data; boundary=--------------------------068069708667189470657546 197 (ca22a1cb)
+2019-11-30T20:38:05.2850880+03:00 0HLRLNFPH0FMN:00000002 [INF] Successfully validated the token. (60169667)
+2019-11-30T20:38:05.2998322+03:00 0HLRLNFPH0FMN:00000002 [INF] Route matched with "{action = \"Lock\", controller = \"User\"}". Executing controller action with signature "Microsoft.AspNetCore.Mvc.IActionResult Lock(System.Guid)" on controller "Clay.Controllers.UserController" ("Clay"). (122b2fdf)
+2019-11-30T20:38:05.3413719+03:00 0HLRLNFPH0FMN:00000002 [INF] Authorization was successful. (0d575a54)
+2019-11-30T20:38:05.3510639+03:00 0HLRLNFPH0FMN:00000002 [INF] Executing action method "Clay.Controllers.UserController.Lock (Clay)" - Validation state: Valid (dad538d7)
+2019-11-30T20:38:05.3616688+03:00 0HLRLNFPH0FMN:00000002 [INF] Entity Framework Core "2.1.11-servicing-32099" initialized '"WebDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None" (9958f5bb)
+2019-11-30T20:38:05.3712942+03:00 0HLRLNFPH0FMN:00000002 [INF] Executed DbCommand ("3"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Discriminator], [u].[Email], [u].[EmailConfirmed], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE ([u].[Discriminator] = N'AppIdentityUser') AND ([u].[NormalizedUserName] = @__normalizedUserName_0)" (0723d8ff)
+2019-11-30T20:38:05.4201696+03:00 0HLRLNFPH0FMN:00000002 [INF] Executed DbCommand ("5"ms) [Parameters=["@__userId_0='?' (Size = 450), @__lockId_1='?' (DbType = Guid)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [ul].[LockId], [ul].[UserId]
+FROM [UserLock] AS [ul]
+WHERE ([ul].[UserId] = @__userId_0) AND ([ul].[LockId] = @__lockId_1)" (0723d8ff)
+2019-11-30T20:38:05.5042912+03:00 0HLRLNFPH0FMN:00000002 [INF] Executed DbCommand ("2"ms) [Parameters=["@__id_0='?' (DbType = Guid)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [l].[Id], [l].[IsLocked], [l].[Name], [l].[Place]
+FROM [Locks] AS [l]
+WHERE [l].[Id] = @__id_0" (0723d8ff)
+2019-11-30T20:38:05.5894476+03:00 0HLRLNFPH0FMN:00000002 [INF] Executed DbCommand ("2"ms) [Parameters=["@__lockModel_Id_0='?' (DbType = Guid)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [l].[Id], [l].[IsLocked], [l].[Name], [l].[Place]
+FROM [Locks] AS [l]
+WHERE [l].[Id] = @__lockModel_Id_0" (0723d8ff)
+2019-11-30T20:38:05.7394773+03:00 0HLRLNFPH0FMN:00000002 [INF] Executed DbCommand ("4"ms) [Parameters=["@p1='?' (DbType = Guid), @p0='?' (DbType = Boolean)"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+UPDATE [Locks] SET [IsLocked] = @p0
+WHERE [Id] = @p1;
+SELECT @@ROWCOUNT;" (0723d8ff)
+2019-11-30T20:38:05.8686009+03:00 0HLRLNFPH0FMN:00000002 [INF] Executed DbCommand ("5"ms) [Parameters=["@p0='?' (Size = 4000), @p1='?' (DbType = Boolean), @p2='?' (DbType = Guid), @p3='?' (DbType = DateTime2), @p4='?' (Size = 4000)"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+INSERT INTO [Attempts] ([Action], [IsSuccessful], [LockId], [Time], [UserId])
+VALUES (@p0, @p1, @p2, @p3, @p4);
+SELECT [Id]
+FROM [Attempts]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();" (0723d8ff)
+2019-11-30T20:38:05.8863226+03:00 0HLRLNFPH0FMN:00000002 [INF] Executed action method "Clay.Controllers.UserController.Lock (Clay)", returned result "Microsoft.AspNetCore.Mvc.OkResult" in 529.7312ms. (50a9e262)
+2019-11-30T20:38:05.9005011+03:00 0HLRLNFPH0FMN:00000002 [INF] Executing HttpStatusCodeResult, setting HTTP status code 200 (e28ccfae)
+2019-11-30T20:38:05.9060276+03:00 0HLRLNFPH0FMN:00000002 [INF] Executed action "Clay.Controllers.UserController.Lock (Clay)" in 600.7854ms (afa2e885)
+2019-11-30T20:38:05.9115195+03:00 0HLRLNFPH0FMN:00000002 [INF] Request finished in 653.3131ms 200  (791a596a)
+2019-11-30T20:39:06.4963438+03:00 0HLRLNFPH0FMP:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:44332/User/GetMyHistory   (ca22a1cb)
+2019-11-30T20:39:06.5022583+03:00 0HLRLNFPH0FMP:00000001 [INF] Successfully validated the token. (60169667)
+2019-11-30T20:39:06.6203221+03:00 0HLRLNFPH0FMP:00000001 [INF] Route matched with "{action = \"GetMyHistory\", controller = \"User\"}". Executing controller action with signature "Microsoft.AspNetCore.Mvc.IActionResult GetMyHistory()" on controller "Clay.Controllers.UserController" ("Clay"). (122b2fdf)
+2019-11-30T20:39:06.6265434+03:00 0HLRLNFPH0FMP:00000001 [INF] Authorization was successful. (0d575a54)
+2019-11-30T20:39:06.6347108+03:00 0HLRLNFPH0FMP:00000001 [INF] Executing action method "Clay.Controllers.UserController.GetMyHistory (Clay)" - Validation state: Valid (dad538d7)
+2019-11-30T20:39:06.6447549+03:00 0HLRLNFPH0FMP:00000001 [INF] Entity Framework Core "2.1.11-servicing-32099" initialized '"WebDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None" (9958f5bb)
+2019-11-30T20:39:06.6541070+03:00 0HLRLNFPH0FMP:00000001 [INF] Executed DbCommand ("2"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Discriminator], [u].[Email], [u].[EmailConfirmed], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE ([u].[Discriminator] = N'AppIdentityUser') AND ([u].[NormalizedUserName] = @__normalizedUserName_0)" (0723d8ff)
+2019-11-30T20:39:06.6867433+03:00 0HLRLNFPH0FMP:00000001 [INF] Executed DbCommand ("8"ms) [Parameters=["@__userId_0='?' (Size = 4000)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [a].[Id], [a].[Action], [a].[IsSuccessful], [a].[LockId], [a].[Time], [a].[UserId]
+FROM [Attempts] AS [a]
+WHERE [a].[UserId] = @__userId_0" (0723d8ff)
+2019-11-30T20:39:06.7017768+03:00 0HLRLNFPH0FMP:00000001 [INF] Executed action method "Clay.Controllers.UserController.GetMyHistory (Clay)", returned result "Microsoft.AspNetCore.Mvc.JsonResult" in 62.1598ms. (50a9e262)
+2019-11-30T20:39:06.7086059+03:00 0HLRLNFPH0FMP:00000001 [INF] Executing JsonResult, writing value of type '"System.Collections.Generic.List`1[[Clay.Models.Domain.Attempt, Clay, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"'. (2f513669)
+2019-11-30T20:39:06.7286545+03:00 0HLRLNFPH0FMP:00000001 [INF] Executed action "Clay.Controllers.UserController.GetMyHistory (Clay)" in 103.2355ms (afa2e885)
+2019-11-30T20:39:06.7339577+03:00 0HLRLNFPH0FMP:00000001 [INF] Request finished in 236.9047ms 200 application/json; charset=utf-8 (791a596a)
+2019-11-30T20:39:25.8187044+03:00 0HLRLNFPH0FMP:00000002 [INF] Request starting HTTP/1.1 GET http://localhost:44332/User/GetLockHistory multipart/form-data; boundary=--------------------------507666159773642540017749 197 (ca22a1cb)
+2019-11-30T20:39:25.8236945+03:00 0HLRLNFPH0FMP:00000002 [INF] Successfully validated the token. (60169667)
+2019-11-30T20:39:25.8327301+03:00 0HLRLNFPH0FMP:00000002 [INF] Route matched with "{action = \"GetLockHistory\", controller = \"User\"}". Executing controller action with signature "Microsoft.AspNetCore.Mvc.IActionResult GetLockHistory(System.Guid)" on controller "Clay.Controllers.UserController" ("Clay"). (122b2fdf)
+2019-11-30T20:39:25.8377308+03:00 0HLRLNFPH0FMP:00000002 [INF] Authorization was successful. (0d575a54)
+2019-11-30T20:39:25.8439202+03:00 0HLRLNFPH0FMP:00000002 [INF] Executing action method "Clay.Controllers.UserController.GetLockHistory (Clay)" - Validation state: Valid (dad538d7)
+2019-11-30T20:39:25.8503075+03:00 0HLRLNFPH0FMP:00000002 [INF] Entity Framework Core "2.1.11-servicing-32099" initialized '"WebDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "None" (9958f5bb)
+2019-11-30T20:39:25.8613474+03:00 0HLRLNFPH0FMP:00000002 [INF] Executed DbCommand ("4"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Discriminator], [u].[Email], [u].[EmailConfirmed], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE ([u].[Discriminator] = N'AppIdentityUser') AND ([u].[NormalizedUserName] = @__normalizedUserName_0)" (0723d8ff)
+2019-11-30T20:39:25.8698668+03:00 0HLRLNFPH0FMP:00000002 [INF] Executed DbCommand ("1"ms) [Parameters=["@__userId_0='?' (Size = 450), @__lockId_1='?' (DbType = Guid)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [ul].[LockId], [ul].[UserId]
+FROM [UserLock] AS [ul]
+WHERE ([ul].[UserId] = @__userId_0) AND ([ul].[LockId] = @__lockId_1)" (0723d8ff)
+2019-11-30T20:39:25.8953204+03:00 0HLRLNFPH0FMP:00000002 [INF] Executed DbCommand ("7"ms) [Parameters=["@__lockId_0='?' (DbType = Guid)"], CommandType='Text', CommandTimeout='30']"
+""SELECT [a].[Id], [a].[Action], [a].[IsSuccessful], [a].[LockId], [a].[Time], [a].[UserId]
+FROM [Attempts] AS [a]
+WHERE [a].[LockId] = @__lockId_0" (0723d8ff)
+2019-11-30T20:39:25.9023316+03:00 0HLRLNFPH0FMP:00000002 [INF] Executed action method "Clay.Controllers.UserController.GetLockHistory (Clay)", returned result "Microsoft.AspNetCore.Mvc.JsonResult" in 52.083ms. (50a9e262)
+2019-11-30T20:39:25.9084397+03:00 0HLRLNFPH0FMP:00000002 [INF] Executing JsonResult, writing value of type '"System.Collections.Generic.List`1[[Clay.Models.Domain.Attempt, Clay, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"'. (2f513669)
+2019-11-30T20:39:25.9140808+03:00 0HLRLNFPH0FMP:00000002 [INF] Executed action "Clay.Controllers.UserController.GetLockHistory (Clay)" in 76.1423ms (afa2e885)
+2019-11-30T20:39:25.9196688+03:00 0HLRLNFPH0FMP:00000002 [INF] Request finished in 100.2018ms 200 application/json; charset=utf-8 (791a596a)

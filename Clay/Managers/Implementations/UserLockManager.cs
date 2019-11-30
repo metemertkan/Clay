@@ -1,13 +1,14 @@
 ﻿using System;
+using Clay.Managers.Interfaces;
 using Clay.Models.Domain;
 using Clay.Repositories.Interfaces;
 using Clay.Services;
 using Clay.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
-namespace Clay.Managers
+namespace Clay.Managers.Implementations
 {
-    public class UserLockManager
+    public class UserLockManager : IUserLockManager
     {
         private readonly UserManager<AppIdentityUser> _userManager;
         private readonly ILockService _lockService;
