@@ -1,0 +1,14 @@
+﻿using System;
+
+namespace Clay.Models.Domain
+{
+    public class Attempt
+    {
+        public long Id { get; set; }
+        public Guid LockId { get; set; }
+        public Guid UserId { get; set; }
+        public string Action { get; set; }
+        public DateTime Time { get; set; }
+        public bool IsSuccessful { get; set; }
+    }
+}
