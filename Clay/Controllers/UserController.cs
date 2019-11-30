@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Clay.Controllers
 {
-    [Authorize(Roles = "User,Administrator")]
+    [Authorize(Roles = "User, Administrator")]
     public class UserController : Controller
     {
         private readonly UserManager<AppIdentityUser> _userManager;
@@ -27,7 +27,7 @@ namespace Clay.Controllers
         [HttpGet]
         public IActionResult GetMyLocks()
         {
-            var loggedInUser = _userManager.GetUserAsync(HttpContext.User).Result;
+            var loggedInUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
 
             if (loggedInUser == null)
                 return Unauthorized();
@@ -38,7 +38,7 @@ namespace Clay.Controllers
         [HttpGet]
         public IActionResult GetMyHistory()
         {
-            var loggedInUser = _userManager.GetUserAsync(HttpContext.User).Result;
+            var loggedInUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
 
             if (loggedInUser == null)
                 return Unauthorized();
@@ -49,7 +49,7 @@ namespace Clay.Controllers
         [HttpGet]
         public IActionResult GetLockHistory(Guid lockId)
         {
-            var loggedInUser = _userManager.GetUserAsync(HttpContext.User).Result;
+            var loggedInUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
 
             if (loggedInUser == null)
                 return Unauthorized();
@@ -62,7 +62,7 @@ namespace Clay.Controllers
         [HttpPost]
         public IActionResult Lock(Guid lockId)
         {
-            var loggedInUser = _userManager.GetUserAsync(HttpContext.User).Result;
+            var loggedInUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
 
             if (loggedInUser == null)
                 return Unauthorized();
@@ -97,7 +97,7 @@ namespace Clay.Controllers
         [HttpPost]
         public IActionResult UnLock(Guid lockId)
         {
-            var loggedInUser = _userManager.GetUserAsync(HttpContext.User).Result;
+            var loggedInUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
 
             if (loggedInUser == null)
                 return Unauthorized();

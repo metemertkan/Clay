@@ -1,4 +1,5 @@
-﻿using Clay.Models.Account;
+﻿using System.Linq;
+using Clay.Models.Account;
 using Clay.Models.Domain;
 using Clay.Services;
 using Microsoft.AspNetCore.Identity;
@@ -38,8 +39,8 @@ namespace Clay.Controllers
                 _configuration.GetSection("Jwt").GetSection("Key").Value,
                 _configuration.GetSection("Jwt").GetSection("Issuer").Value
             );
-
-            var token = tokenService.GenerateToken(model.Username);
+            var role = userManager.GetRolesAsync(logedinUser).Result.FirstOrDefault();
+            var token = tokenService.GenerateToken(model.Username, role);
             response = Ok(new { id = logedinUser.Id, userName = logedinUser.UserName, token = token });
 
             return response;
