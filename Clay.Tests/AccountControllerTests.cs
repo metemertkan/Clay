@@ -1,14 +1,15 @@
 using System;
+using Clay.Services.Interfaces;
+using Moq;
 using Xunit;
 
 namespace Clay.Tests
 {
-    public class UnitTest1
+    public class AccountControllerTests
     {
         [Fact]
         public void Test1()
         {
-
         }
     }
 }

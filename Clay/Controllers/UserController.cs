@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Clay.Constants;
+using Clay.Data;
 using Clay.Managers.Interfaces;
 using Clay.Models.Domain;
 using Clay.Services.Interfaces;
@@ -38,14 +39,17 @@ namespace Clay.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetMyHistory()
+        public IActionResult GetMyHistory(PagedModel pagedModel)
         {
             var loggedInUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
 
             if (loggedInUser == null)
                 return Unauthorized();
 
-            return Json(_attemptService.GetUserAttempts(loggedInUser.Id));
+            if (pagedModel == null)
+                pagedModel = new PagedModel();
+
+            return Json(_attemptService.GetUserAttempts(loggedInUser.Id, pagedModel));
         }
 
         [HttpGet]

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Clay.Data;
 using Clay.Models.Domain;
 using Clay.Repositories.Interfaces;
 using Clay.Services.Interfaces;
@@ -15,19 +16,19 @@ namespace Clay.Services.Implementation
         {
             _attemptRepository = attemptRepository;
         }
-        public List<Attempt> GetUserAttempts(string userId)
+        public PagedResult<Attempt> GetUserAttempts(string userId, PagedModel pagedModel)
         {
-            return _attemptRepository.Attempts.Where(a => a.UserId == userId).ToList();
+            return _attemptRepository.Attempts.Where(a => a.UserId == userId).GetPaged(pagedModel);
         }
 
-        public List<Attempt> GetLockAttempts(Guid lockId)
+        public PagedResult<Attempt> GetLockAttempts(Guid lockId, PagedModel pagedModel)
         {
-            return _attemptRepository.Attempts.Where(a => a.LockId == lockId).ToList();
+            return _attemptRepository.Attempts.Where(a => a.LockId == lockId).GetPaged(pagedModel);
         }
 
-        public List<Attempt> GetAttempts()
+        public PagedResult<Attempt> GetAttempts(PagedModel pagedModel)
         {
-            return _attemptRepository.Attempts.ToList();
+            return _attemptRepository.Attempts.GetPaged(pagedModel);
         }
 
         public void CreateAttempt(Attempt attempt)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Clay.Data;
 using Clay.Models.Domain;
 using Clay.Repositories.Interfaces;
 using Clay.Services.Interfaces;
@@ -18,9 +19,9 @@ namespace Clay.Services.Implementation
             _userLockRepository = userLockRepository;
         }
 
-        public List<Lock> GetAll()
+        public PagedResult<Lock> GetAll(PagedModel pagedModel)
         {
-            return _lockRepository.Locks.ToList();
+            return _lockRepository.Locks.GetPaged(pagedModel);
         }
 
         public Lock GetById(Guid id)
@@ -32,12 +33,12 @@ namespace Clay.Services.Implementation
             return _lockRepository.Locks.FirstOrDefault(l => string.Equals(l.Name, name));
         }
 
-        public List<Lock> GetByUserId(string userId)
+        public List<Lock> GetByUserId(string userId, PagedModel pagedModel)
         {
-            var userLocks = _userLockRepository.UserLocks.Where(ul => ul.UserId.Equals(userId)).Include(ul => ul.Lock).ToList();
+            var userLocks = _userLockRepository.UserLocks.Where(ul => ul.UserId.Equals(userId)).Include(ul => ul.Lock).GetPaged(pagedModel);
 
             var list = new List<Lock>();
-            foreach (var userLock in userLocks)
+            foreach (var userLock in userLocks.Results)
             {
                 list.Add(new Lock
                 {
