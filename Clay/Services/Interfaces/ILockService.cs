@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Clay.Data;
+using Clay.Data.Pagination;
 using Clay.Models.Domain;
 
 namespace Clay.Services.Interfaces

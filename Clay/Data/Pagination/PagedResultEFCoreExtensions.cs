@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Clay.Data
+namespace Clay.Data.Pagination
 {
     public static class PagedResultEFCoreExtensions
     {

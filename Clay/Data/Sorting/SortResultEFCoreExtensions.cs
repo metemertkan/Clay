@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Clay.Data.Sort;
 
-namespace Clay.Data
+namespace Clay.Data.Sorting
 {
     public static class SortResultEFCoreExtensions
     {

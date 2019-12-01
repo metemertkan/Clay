@@ -4,6 +4,7 @@ using System.Linq;
 using Clay.Models.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Clay.Data
 {
@@ -12,6 +13,7 @@ namespace Clay.Data
         private readonly IServiceScopeFactory scopeFactory;
         private UserManager<AppIdentityUser> userManager;
         private RoleManager<IdentityRole> roleManager;
+        private ILogger<SeedData> _log;
 
         private const int LOCK_NUMBER = 100;
         private const int USER_NUMBER = 30;
@@ -26,10 +28,16 @@ namespace Clay.Data
             {
                 userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<AppIdentityUser>>();
                 roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                _log = serviceScope.ServiceProvider.GetRequiredService<ILogger<SeedData>>();
+
                 using (var context = serviceScope.ServiceProvider.GetService<WebDbContext>())
                 {
+                    _log.LogInformation("Checking if database seeded ?");
                     if (!context.Database.EnsureCreated())
+                    {
+                        _log.LogInformation("No need to seed");
                         return;
+                    }
                     SeedRoles();
                     SeedUsers();
                     SeedLocks(context);
@@ -40,6 +48,7 @@ namespace Clay.Data
 
         private void SeedUserLocks(WebDbContext context)
         {
+            _log.LogInformation("Seeding user locks");
             var user1 = userManager.FindByEmailAsync("user1@user.com").Result;
             var lockList = context.Locks.Take(5).ToList();
 
@@ -59,6 +68,7 @@ namespace Clay.Data
 
         private void SeedRoles()
         {
+            _log.LogInformation("Seeding Roles");
             CreateRole("User");
             CreateRole("Administrator");
         }
@@ -75,6 +85,7 @@ namespace Clay.Data
 
         private void SeedLocks(WebDbContext context)
         {
+            _log.LogInformation("Seeding Locks");
             var locks = CreateLocksForSeeding();
             context.Locks.AddRange(locks);
             context.SaveChanges();
@@ -98,6 +109,7 @@ namespace Clay.Data
 
         private void SeedUsers()
         {
+            _log.LogInformation("Seeding Users");
             Createuser("mete", "mete@mete.com", "Mete123.", "Administrator");
 
             for (int i = 0; i < USER_NUMBER; i++)

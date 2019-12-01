@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using Clay.Constants;
 using Clay.Data;
+using Clay.Data.Pagination;
 using Clay.Managers.Interfaces;
 using Clay.Models.Domain;
 using Clay.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -18,13 +21,15 @@ namespace Clay.Controllers
         private readonly IAttemptService _attemptService;
         private readonly IUserLockManager _userLockManager;
         private readonly ILogger<AdminController> _log;
+        private readonly IMemoryCache _cache;
 
-        public AdminController(ILockService lockService, IAttemptService attemptService, ILogger<AdminController> log, IUserLockManager userLockManager)
+        public AdminController(ILockService lockService, IAttemptService attemptService, ILogger<AdminController> log, IUserLockManager userLockManager, IMemoryCache cache)
         {
             _lockService = lockService;
             _attemptService = attemptService;
             _log = log;
             _userLockManager = userLockManager;
+            _cache = cache;
         }
 
         [HttpGet]
@@ -76,10 +81,21 @@ namespace Clay.Controllers
         [HttpGet]
         public IActionResult GetAllAttempts(PagedModel pagedModel)
         {
-            if(pagedModel==null)
-                pagedModel=new PagedModel();
+            if (pagedModel == null)
+                pagedModel = new PagedModel();
 
-            return Ok(_attemptService.GetAttempts(pagedModel));
+            var cacheKey =
+                CacheKeys.ADMINCONTROLLER + CacheKeys.DELIMITER + pagedModel.Page + CacheKeys.DELIMITER + pagedModel.PageSize;
+
+            if (_cache.TryGetValue(cacheKey,
+                out PagedResult<Attempt> attempts))
+                return Ok(attempts);
+
+            var result = _attemptService.GetAttempts(pagedModel);
+
+            _cache.Set(cacheKey, result);
+
+            return Ok(result);
         }
     }
 }

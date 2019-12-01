@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Clay.Data;
+using Clay.Data.Pagination;
 using Clay.Models.Domain;
 using Clay.Repositories.Interfaces;
 using Clay.Services.Interfaces;

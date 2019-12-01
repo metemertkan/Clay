@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Clay.Data
+﻿namespace Clay.Data.Pagination
 {
     public abstract class PagedResultBase
     {
