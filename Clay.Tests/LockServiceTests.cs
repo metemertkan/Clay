@@ -137,8 +137,8 @@ namespace Clay.Tests
             var result = target.GetByUserId(exampleUserId.ToString(),pagedModel);
 
             //Assert
-            Assert.Equal(1,result.Count);
-            Assert.Equal("test",result.FirstOrDefault().Name);
+            Assert.Equal(1,result.Results.Count);
+            Assert.Equal("test",result.Results.FirstOrDefault().Name);
         }
     }
 }

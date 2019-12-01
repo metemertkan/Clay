@@ -33,14 +33,14 @@ namespace Clay.Services.Implementation
             return _lockRepository.Locks.FirstOrDefault(l => string.Equals(l.Name, name));
         }
 
-        public List<Lock> GetByUserId(string userId, PagedModel pagedModel)
+        public PagedResult<Lock> GetByUserId(string userId, PagedModel pagedModel)
         {
             var userLocks = _userLockRepository.UserLocks.Where(ul => ul.UserId.Equals(userId)).Include(ul => ul.Lock).GetPaged(pagedModel);
 
-            var list = new List<Lock>();
+            var list = new PagedResult<Lock>();
             foreach (var userLock in userLocks.Results)
             {
-                list.Add(new Lock
+                list.Results.Add(new Lock
                 {
                     Id = userLock.LockId,
                     Name = userLock.Lock.Name,
@@ -48,6 +48,11 @@ namespace Clay.Services.Implementation
                     Place = userLock.Lock.Place
                 });
             }
+
+            list.CurrentPage = userLocks.CurrentPage;
+            list.PageCount = userLocks.PageCount;
+            list.PageSize = userLocks.PageSize;
+            list.RowCount = userLocks.RowCount;
 
             return list;
         }

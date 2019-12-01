@@ -10,7 +10,7 @@ namespace Clay.Services.Interfaces
         PagedResult<Lock> GetAll(PagedModel pagedModel);
         Lock GetById(Guid id);
         Lock GetByName(string name);
-        List<Lock> GetByUserId(string userId,PagedModel pagedModel);
+        PagedResult<Lock> GetByUserId(string userId,PagedModel pagedModel);
         void SaveLock(Lock lockModel);
         void Lock(Guid id);
         void UnLock(Guid id);
