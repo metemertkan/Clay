@@ -1,15 +1,18 @@
 Project Scope
+
 -Admin API for lock and access management.
 -Login mechanism was implemented with JWT authentication.
 -Audit trail for every Lock/Unlock action
 -User API for individual's lock and access management.
 
 Features
+
 -Pagination
 -Caching
 -Authorization
 
 Following technologies was used:
+
 -Asp.net Core 2.1
 -Entity Framework
 -MSSQL
@@ -18,6 +21,7 @@ Following technologies was used:
 Asp.net core choosed because it is flexible and fast. MSSQL and Entity Framework was choosed because I am most familiar with them. Jwt was choosed to avoid time consumption reasons.
 
 Architecture
+
 Application follows MVC architecture patterns and follows most of the Domain Design Principle patterns.
 -Domain folder holds the domain objects
 -Repository folder holds data access layer
@@ -25,6 +29,7 @@ Application follows MVC architecture patterns and follows most of the Domain Des
 -Controllers is for user interactions 
 
 Improvements
+
 -Searching and Filtering implementation
 	-Currently there is only pagination, searching and sorting is a nice improvement. I started an implementation for sort but didn't used it.
 -Message Queuing 
@@ -34,5 +39,6 @@ Improvements
 
 
 How to run and install
+
 Configure the connection string in appsettings.json and "dotnet watch run" is enough to run.
 It will create the database and start the application.
