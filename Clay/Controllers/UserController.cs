@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using Clay.Constants;
-using Clay.Data;
 using Clay.Data.Pagination;
 using Clay.Managers.Interfaces;
 using Clay.Models.Domain;
@@ -13,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Clay.Controllers
 {
     [Authorize(Roles = "User, Administrator")]
-    public class UserController : Controller
+    public class UserController : ClayControllerBase
     {
         private readonly UserManager<AppIdentityUser> _userManager;
         private readonly ILockService _lockService;
@@ -29,7 +27,7 @@ namespace Clay.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetMyLocks(PagedModel pagedModel)
+        public IActionResult GetMyLocks([FromBody]PagedModel pagedModel)
         {
             var loggedInUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
 
@@ -39,7 +37,7 @@ namespace Clay.Controllers
             if (pagedModel == null)
                 pagedModel = new PagedModel();
 
-            return Json(_lockService.GetByUserId(loggedInUser.Id, pagedModel));
+            return Ok(_lockService.GetByUserId(loggedInUser.Id, pagedModel));
         }
 
         [HttpGet]
@@ -53,7 +51,7 @@ namespace Clay.Controllers
             if (pagedModel == null)
                 pagedModel = new PagedModel();
 
-            return Json(_attemptService.GetUserAttempts(loggedInUser.Id, pagedModel));
+            return Ok(_attemptService.GetUserAttempts(loggedInUser.Id, pagedModel));
         }
 
         [HttpGet]
@@ -70,7 +68,7 @@ namespace Clay.Controllers
             if (pagedModel == null)
                 pagedModel = new PagedModel();
 
-            return Json(_attemptService.GetLockAttempts(lockId, pagedModel));
+            return Ok(_attemptService.GetLockAttempts(lockId, pagedModel));
         }
 
         [HttpPost]

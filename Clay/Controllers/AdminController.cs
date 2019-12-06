@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Clay.Controllers
 {
     [Authorize(Roles = "Administrator")]
-    public class AdminController : Controller
+    public class AdminController : ClayControllerBase
     {
         private readonly ILockService _lockService;
         private readonly IAttemptService _attemptService;

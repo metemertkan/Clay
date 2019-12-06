@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Clay.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : ClayControllerBase
     {
         private UserManager<AppIdentityUser> userManager;
         private SignInManager<AppIdentityUser> signInManager;
