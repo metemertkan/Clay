@@ -1,85 +1,92 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 using Clay.Constants;
-using Clay.Data;
 using Clay.Data.Pagination;
 using Clay.Managers.Interfaces;
 using Clay.Models.Domain;
-using Clay.Services.Interfaces;
+using Clay.Models.InputModels.Admin;
+using Clay.UnitOfWork.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Clay.Controllers
 {
     [Authorize(Roles = "Administrator")]
     public class AdminController : ClayControllerBase
     {
-        private readonly ILockService _lockService;
-        private readonly IAttemptService _attemptService;
         private readonly IUserLockManager _userLockManager;
         private readonly ILogger<AdminController> _log;
         private readonly IMemoryCache _cache;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AdminController(ILockService lockService, IAttemptService attemptService, ILogger<AdminController> log, IUserLockManager userLockManager, IMemoryCache cache)
+        public AdminController(ILogger<AdminController> log, IMemoryCache cache, IUnitOfWork unitOfWork, IUserLockManager userLockManager)
         {
-            _lockService = lockService;
-            _attemptService = attemptService;
             _log = log;
-            _userLockManager = userLockManager;
             _cache = cache;
+            _unitOfWork = unitOfWork;
+            _userLockManager = userLockManager;
         }
 
         [HttpGet]
-        public IActionResult GetLocks(PagedModel pagedModel)
+        public async Task<IActionResult> GetLocks(PagedModel pagedModel)
         {
             if (pagedModel == null)
                 pagedModel = new PagedModel();
 
-            return Ok(_lockService.GetAll(pagedModel));
+            var result = await _unitOfWork.LockRepository.GetAll(pagedModel);
+
+            return Ok(result);
         }
 
         [HttpPost]
-        public IActionResult SaveLock(Lock lockModel)
+        public async Task<IActionResult> SaveLock(Lock lockModel)
         {
-            _lockService.SaveLock(lockModel);
-            return Ok();
+            if (lockModel.Id == Guid.Empty)
+            {
+                await _unitOfWork.LockRepository.Add(lockModel);
+            }
+            else
+            {
+                await _unitOfWork.LockRepository.Update(lockModel);
+            }
+
+            return Ok(await _unitOfWork.Save());
         }
 
         [HttpPost]
-        public IActionResult AssignUserToLock(string userId, Guid lockId)
+        public async Task<IActionResult> AssignUserToLock(UserLockModel model)
         {
             try
             {
-                _userLockManager.Assign(userId, lockId);
+               await _userLockManager.Assign(model.UserId, model.LockId);
             }
             catch (Exception e)
             {
                 _log.LogError($"Something went wrong: {e.Message}");
                 return StatusCode(500);
             }
-            return Ok();
+            return Ok(await _unitOfWork.Save());
         }
 
         [HttpPost]
-        public IActionResult UnAssignUserFromLock(string userId, Guid lockId)
+        public async Task<IActionResult> UnAssignUserFromLock(UserLockModel model)
         {
             try
             {
-                _userLockManager.UnAssign(userId, lockId);
+               await _userLockManager.UnAssign(model.UserId, model.LockId);
             }
             catch (Exception e)
             {
                 _log.LogError($"Something went wrong: {e.Message}");
                 return StatusCode(500);
             }
-            return Ok();
+            return Ok(await _unitOfWork.Save());
         }
 
         [HttpGet]
-        public IActionResult GetAllAttempts(PagedModel pagedModel)
+        public async Task<IActionResult> GetAllAttempts(PagedModel pagedModel)
         {
             if (pagedModel == null)
                 pagedModel = new PagedModel();
@@ -91,7 +98,7 @@ namespace Clay.Controllers
                 out PagedResult<Attempt> attempts))
                 return Ok(attempts);
 
-            var result = _attemptService.GetAttempts(pagedModel);
+            var result = await _unitOfWork.AttemptRepository.GetAll(pagedModel);
 
             _cache.Set(cacheKey, result);
 

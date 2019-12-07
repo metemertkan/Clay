@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Clay.Data.Pagination
 {
     public static class PagedResultEFCoreExtensions
     {
-        public static PagedResult<T> GetPaged<T>(this IQueryable<T> query, PagedModel pagedModel)
+        public static async Task<PagedResult<T>> GetPaged<T>(this IQueryable<T> query, PagedModel pagedModel)
         {
             var result = new PagedResult<T>
             {
@@ -18,7 +20,7 @@ namespace Clay.Data.Pagination
             result.PageCount = (int)Math.Ceiling(pageCount);
 
             var skip = (pagedModel.Page - 1) * pagedModel.PageSize;
-            result.Results = query.Skip(skip).Take(pagedModel.PageSize).ToList();
+            result.Results = await query.Skip(skip).Take(pagedModel.PageSize).ToListAsync();
 
             return result;
         }

@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Clay.Managers.Interfaces;
 using Clay.Models.Domain;
-using Clay.Repositories.Interfaces;
-using Clay.Services;
-using Clay.Services.Interfaces;
+using Clay.UnitOfWork.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace Clay.Managers.Implementations
@@ -11,37 +10,42 @@ namespace Clay.Managers.Implementations
     public class UserLockManager : IUserLockManager
     {
         private readonly UserManager<AppIdentityUser> _userManager;
-        private readonly ILockService _lockService;
-        private readonly IUserLockRepository _userLockRepository;
-        public UserLockManager(UserManager<AppIdentityUser> userManager, ILockService lockService, IUserLockRepository userLockRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        public UserLockManager(UserManager<AppIdentityUser> userManager, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
-            _lockService = lockService;
-            _userLockRepository = userLockRepository;
+            _unitOfWork = unitOfWork;
         }
 
-        public void Assign(string userId, Guid lockId)
+        public async Task<bool> Assign(string userId, Guid lockId)
         {
-            var (user, @lock) = GetUserAndLock(userId, lockId);
-            _userLockRepository.SaveUserLock(user.Id, @lock.Id);
+            var (user, @lock) = await GetUserAndLock(userId, lockId);
+            await _unitOfWork.UserLockRepository.Add(new UserLock
+            {
+                LockId = @lock.Id,
+                UserId = user.Id
+            });
+            return await _unitOfWork.Save();
         }
-        public void UnAssign(string userId, Guid lockId)
+        public async Task<bool> UnAssign(string userId, Guid lockId)
         {
-            var (user, @lock) = GetUserAndLock(userId, lockId);
-            _userLockRepository.RemoveUserLock(user.Id, @lock.Id);
+            var (user, @lock) = await GetUserAndLock(userId, lockId);
+            await _unitOfWork.UserLockRepository.Delete(l => l.UserId == user.Id && l.LockId == @lock.Id);
+            return await _unitOfWork.Save();
         }
-        public bool CanAccess(string userId, Guid lockId)
+        public async Task<bool> CanAccess(string userId, Guid lockId)
         {
-            return _userLockRepository.RelationExist(userId, lockId);
+            var result = await _unitOfWork.UserLockRepository.FindBy(ul => ul.LockId == lockId && ul.UserId == userId);
+            return result != null;
         }
 
-        private Tuple<AppIdentityUser, Lock> GetUserAndLock(string userId, Guid lockId)
+        private async Task<Tuple<AppIdentityUser, Lock>> GetUserAndLock(string userId, Guid lockId)
         {
             var foundUser = _userManager.FindByIdAsync(userId).Result;
             if (foundUser == null)
                 throw new Exception("User not found");
 
-            var foundLock = _lockService.GetById(lockId);
+            var foundLock = await _unitOfWork.LockRepository.FindBy(l => l.Id == lockId);
             if (foundLock == null)
                 throw new Exception("Lock not found");
 

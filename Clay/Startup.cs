@@ -4,10 +4,7 @@ using Clay.Data;
 using Clay.Managers.Implementations;
 using Clay.Managers.Interfaces;
 using Clay.Models.Domain;
-using Clay.Repositories.Implementations;
-using Clay.Repositories.Interfaces;
-using Clay.Services.Implementation;
-using Clay.Services.Interfaces;
+using Clay.UnitOfWork.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,8 +14,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 namespace Clay
 {
@@ -45,13 +44,8 @@ namespace Clay
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddTransient<IAttemptRepository, EFAttemptRepository>();
-            services.AddTransient<ILockRepository, EFLockRepository>();
-            services.AddTransient<IUserLockRepository, EFUserLockRepository>();
-            services.AddTransient<ILockService, LockService>();
-            services.AddTransient<IAttemptService, AttemptService>();
-            services.AddTransient<IUserLockService, UserLockService>();
-            services.AddTransient<IUserLockManager, UserLockManager>();
+            services.TryAddTransient<IUnitOfWork, UnitOfWork.Implementation.UnitOfWork>();
+            services.TryAddTransient<IUserLockManager, UserLockManager>();
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)

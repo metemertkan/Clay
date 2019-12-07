@@ -1,11 +1,11 @@
-﻿using System.Linq;
+﻿using System.Threading.Tasks;
 using Clay.Models.Domain;
 
 namespace Clay.Repositories.Interfaces
 {
-    public interface ILockRepository
+    public interface ILockRepository : IBaseRepository<Lock>
     {
-        IQueryable<Lock> Locks { get; }
-        void SaveLock(Lock lockModel);
+        Task<bool> Lock(Lock @lock);
+        Task<bool> Unlock(Lock @lock);
     }
 }

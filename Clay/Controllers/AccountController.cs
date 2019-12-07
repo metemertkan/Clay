@@ -1,5 +1,6 @@
 ﻿using System.Linq;
-using Clay.Models.Account;
+using System.Threading.Tasks;
+using Clay.Models.InputModels.Account;
 using Clay.Models.Domain;
 using Clay.Services;
 using Microsoft.AspNetCore.Identity;
@@ -22,26 +23,26 @@ namespace Clay.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(LoginModel model)
+        public async Task<IActionResult> Login(LoginModel model)
         {
             IActionResult response = Unauthorized();
             if (!ModelState.IsValid)
                 return response;
 
-            var result = signInManager.PasswordSignInAsync(model.Username, model.Password, false, false).Result;
+            var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
 
             if (!result.Succeeded)
                 return response;
 
-            var logedinUser = userManager.FindByNameAsync(model.Username).Result;
+            var logedinUser = await userManager.FindByNameAsync(model.Username);
 
             var tokenService = new TokenService(
                 _configuration.GetSection("Jwt").GetSection("Key").Value,
                 _configuration.GetSection("Jwt").GetSection("Issuer").Value
             );
-            var role = userManager.GetRolesAsync(logedinUser).Result.FirstOrDefault();
+            var role = (await userManager.GetRolesAsync(logedinUser)).FirstOrDefault();
             var token = tokenService.GenerateToken(model.Username, role);
-            response = Ok(new { id = logedinUser.Id, userName = logedinUser.UserName, token = token });
+            response = Ok(new { id = logedinUser.Id, userName = logedinUser.UserName, token });
 
             return response;
         }

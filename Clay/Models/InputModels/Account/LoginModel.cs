@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Clay.Models.Account
+namespace Clay.Models.InputModels.Account
 {
     public class LoginModel
     {
