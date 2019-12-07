@@ -1,4 +1,5 @@
-﻿namespace Clay.Data.Pagination
+﻿
+namespace Clay.Data.Pagination
 {
     public class PagedModel
     {

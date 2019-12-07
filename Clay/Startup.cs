@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Microsoft.Extensions.Logging;
 using Clay.Data;
+using Clay.Filters;
 using Clay.Managers.Implementations;
 using Clay.Managers.Interfaces;
 using Clay.Models.Domain;
@@ -46,6 +47,7 @@ namespace Clay
 
             services.TryAddTransient<IUnitOfWork, UnitOfWork.Implementation.UnitOfWork>();
             services.TryAddTransient<IUserLockManager, UserLockManager>();
+            services.TryAddTransient<CustomCacheActionFilter>();
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)

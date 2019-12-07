@@ -2,7 +2,8 @@
 {
     public static class CacheKeys
     {
-        public const string ADMINCONTROLLER = "admincontroller";
         public const string DELIMITER = "_";
+        public const string GETLOCKS = "GetLocks";
+        public const string GETATTEMPTS = "GetAttempts";
     }
 }
