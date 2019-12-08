@@ -125,7 +125,7 @@ namespace Clay.Controllers
 
             await _unitOfWork.AttemptRepository.Add(attempt);
             await _unitOfWork.Save();
-            return Ok(Task.FromResult(true));
+            return Ok(true);
         }
 
         [HttpPost]
@@ -160,7 +160,7 @@ namespace Clay.Controllers
 
             await _unitOfWork.AttemptRepository.Add(attempt);
             await _unitOfWork.Save();
-            return Ok(Task.FromResult(true));
+            return Ok(true);
         }
 
         private async Task<bool> CanUserAccess(AppIdentityUser loggedInUser, Guid lockId)

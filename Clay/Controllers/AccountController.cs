@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Clay.Models.InputModels.Account;
 using Clay.Models.Domain;
+using Clay.Models.ResponseModels;
 using Clay.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +43,8 @@ namespace Clay.Controllers
             );
             var role = (await userManager.GetRolesAsync(logedinUser)).FirstOrDefault();
             var token = tokenService.GenerateToken(model.Username, role);
-            response = Ok(new { id = logedinUser.Id, userName = logedinUser.UserName, token });
+            var responseModel = new LoginResponseModel { Id = logedinUser.Id, Username = logedinUser.UserName, Token = token };
+            response = Ok(responseModel);
 
             return response;
         }

@@ -19,7 +19,6 @@ namespace Clay.Tests
     public class AdminControllerTests
     {
         private Mock<ILogger<AdminController>> _logger;
-
         private Mock<IUnitOfWork> _unitOfWorkMock;
         private Mock<IUserLockManager> _userLockMock;
         private PagedModel _defaultPagedModel;
@@ -79,11 +78,16 @@ namespace Clay.Tests
             //Act
             var target = new AdminController(_logger.Object, _unitOfWorkMock.Object, _userLockMock.Object);
             var okResult = target.GetLocks(_defaultPagedModel).Result as OkObjectResult;
+            if (okResult == null)
+                Assert.IsTrue(false);
             var response = okResult.Value as PagedResult<Lock>;
             //Assert
             Assert.NotNull(response);
+            Assert.NotNull(response.Results);
             Assert.AreEqual(5, response.Results.Count);
-            Assert.AreEqual("place1", response.Results.FirstOrDefault(l => l.Name.Equals("lock1")).Place);
+            var firstLock = response.Results.FirstOrDefault(l => l.Name.Equals("lock1"));
+            Assert.NotNull(firstLock);
+            Assert.AreEqual("place1", firstLock.Place);
 
         }
 
@@ -201,6 +205,8 @@ namespace Clay.Tests
             //Act
             var target = new AdminController(_logger.Object, _unitOfWorkMock.Object, _userLockMock.Object);
             var okResult = target.GetAttempts(_defaultPagedModel).Result as OkObjectResult;
+            if (okResult == null)
+                Assert.IsTrue(false);
             var response = okResult.Value as PagedResult<Attempt>;
             //Assert
             Assert.NotNull(response);
