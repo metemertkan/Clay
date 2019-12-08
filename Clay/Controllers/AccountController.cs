@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Clay.Filters;
 using Clay.Models.InputModels.Account;
 using Clay.Models.Domain;
 using Clay.Models.ResponseModels;
@@ -24,12 +25,11 @@ namespace Clay.Controllers
         }
 
         [HttpPost]
+        [ValidateViewModel]
         public async Task<IActionResult> Login(LoginModel model)
         {
             IActionResult response = Unauthorized();
-            if (!ModelState.IsValid)
-                return response;
-
+           
             var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
 
             if (!result.Succeeded)

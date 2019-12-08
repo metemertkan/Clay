@@ -19,8 +19,8 @@ namespace Clay.Controllers
     public class UserController : ClayControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IUserLockManager _userLockManager
-            ;
+        private readonly IUserLockManager _userLockManager;
+        private readonly Attempt _attempt;
 
         public UserController(IUnitOfWork unitOfWork, IUserLockManager userLockManager)
         {
@@ -58,14 +58,12 @@ namespace Clay.Controllers
         [PaginationCorrection(ParamName = Parameters.PAGEDMODEL)]
         public async Task<IActionResult> GetMyHistory(PagedModel pagedModel)
         {
-            if (pagedModel == null)
-                pagedModel = new PagedModel();
-
             var results = await _unitOfWork.AttemptRepository.SearchBy(pagedModel, a => a.UserId.Equals(GeLogedinUserId()));
             return Ok(results);
         }
 
         [HttpGet]
+        [ValidateViewModel]
         public async Task<IActionResult> GetLockHistory(GetLockHistoryModel model)
         {
             if (!await CanUserAccess(GeLogedinUserId(), model.LockId))
@@ -78,6 +76,7 @@ namespace Clay.Controllers
         }
 
         [HttpPost]
+        [ValidateViewModel]
         public async Task<IActionResult> Lock(LockActionModel model)
         {
             var loggedInUserId = GeLogedinUserId();
@@ -85,31 +84,13 @@ namespace Clay.Controllers
             if (!await CanUserAccess(loggedInUserId, model.LockId))
                 return Unauthorized();
 
-            var attempt = new Attempt
-            {
-                Action = Actions.LOCK,
-                IsSuccessful = true,
-                LockId = model.LockId,
-                Time = DateTime.Now,
-                UserId = loggedInUserId
-            };
+            var result = await ExecuteAction(model.LockId, loggedInUserId, Actions.LOCK);
 
-            var lockActionResult = await _unitOfWork.LockRepository.Lock(new Lock { Id = model.LockId });
-
-            if (!lockActionResult)
-            {
-                attempt.IsSuccessful = false;
-                await _unitOfWork.AttemptRepository.Add(attempt);
-                await _unitOfWork.Save();
-                return BadRequest(Task.FromResult(false));
-            }
-
-            await _unitOfWork.AttemptRepository.Add(attempt);
-            await _unitOfWork.Save();
-            return Ok(true);
+            return result ? (IActionResult)Ok() : BadRequest();
         }
 
         [HttpPost]
+        [ValidateViewModel]
         public async Task<IActionResult> UnLock(LockActionModel model)
         {
             var loggedInUserId = GeLogedinUserId();
@@ -117,28 +98,38 @@ namespace Clay.Controllers
             if (!await CanUserAccess(loggedInUserId, model.LockId))
                 return Unauthorized();
 
-            var attempt = new Attempt
-            {
-                Action = Actions.UNLOCK,
-                IsSuccessful = true,
-                LockId = model.LockId,
-                Time = DateTime.Now,
-                UserId = loggedInUserId
-            };
+            var result = await ExecuteAction(model.LockId, loggedInUserId,Actions.UNLOCK);
 
-            var lockActionResult = await _unitOfWork.LockRepository.Unlock(new Lock { Id = model.LockId });
+            return result ? (IActionResult)Ok() : BadRequest();
+        }
 
-            if (!lockActionResult)
+        private async Task<bool> ExecuteAction(Guid lockId, string loggedInUserId, string action)
+        {
+            var unlockActionResult = await _unitOfWork.LockRepository.Unlock(new Lock { Id = lockId });
+
+            if (!unlockActionResult)
             {
-                attempt.IsSuccessful = false;
-                await _unitOfWork.AttemptRepository.Add(attempt);
+                await CreateAttempt(action, false, lockId, loggedInUserId);
                 await _unitOfWork.Save();
-                return BadRequest(Task.FromResult(false));
+                return false;
             }
 
-            await _unitOfWork.AttemptRepository.Add(attempt);
+            await CreateAttempt(action, true, lockId, loggedInUserId);
             await _unitOfWork.Save();
-            return Ok(true);
+            return true;
+        }
+
+        private async Task CreateAttempt(string action, bool isSuccessful, Guid lockId, string userId)
+        {
+            var attempt = new Attempt
+            {
+                Action = action,
+                IsSuccessful = isSuccessful,
+                LockId = lockId,
+                Time = DateTime.Now,
+                UserId = userId
+            };
+            await _unitOfWork.AttemptRepository.Add(attempt);
         }
 
         private async Task<bool> CanUserAccess(string userId, Guid lockId)

@@ -37,6 +37,7 @@ namespace Clay.Controllers
         }
 
         [HttpPost]
+        [ValidateViewModel]
         public async Task<IActionResult> SaveLock(Lock lockModel)
         {
             if (lockModel.Id == Guid.Empty)
@@ -47,11 +48,13 @@ namespace Clay.Controllers
             {
                 await _unitOfWork.LockRepository.Update(lockModel);
             }
-            
-            return Ok(await _unitOfWork.Save());
+
+            await _unitOfWork.Save();
+            return Ok();
         }
 
         [HttpPost]
+        [ValidateViewModel]
         public async Task<IActionResult> AssignUserToLock(UserLockModel model)
         {
             try
@@ -63,10 +66,13 @@ namespace Clay.Controllers
                 _log.LogError($"Something went wrong: {e.Message}");
                 return StatusCode(500);
             }
-            return Ok(await _unitOfWork.Save());
+
+            await _unitOfWork.Save();
+            return Ok();
         }
 
         [HttpPost]
+        [ValidateViewModel]
         public async Task<IActionResult> UnAssignUserFromLock(UserLockModel model)
         {
             try
@@ -78,7 +84,9 @@ namespace Clay.Controllers
                 _log.LogError($"Something went wrong: {e.Message}");
                 return StatusCode(500);
             }
-            return Ok(await _unitOfWork.Save());
+
+            await _unitOfWork.Save();
+            return Ok();
         }
 
         [HttpGet]
