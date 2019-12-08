@@ -28,7 +28,6 @@ namespace Clay.Controllers
 
         [HttpGet]
         [PaginationCorrection(ParamName = Parameters.PAGEDMODEL)]
-        [ServiceFilter(typeof(ExceptionFilter))]
         public async Task<IActionResult> GetMyLocks(PagedModel pagedModel)
         {
             var userLocks = await _unitOfWork.UserLockRepository.SearchBy(pagedModel, ul => ul.UserId.Equals(GeLogedinUserId()), ul => ul.Lock);
@@ -55,7 +54,6 @@ namespace Clay.Controllers
 
         [HttpGet]
         [PaginationCorrection(ParamName = Parameters.PAGEDMODEL)]
-        [ServiceFilter(typeof(ExceptionFilter))]
         public async Task<IActionResult> GetMyHistory(PagedModel pagedModel)
         {
             var results = await _unitOfWork.AttemptRepository.SearchBy(pagedModel, a => a.UserId.Equals(GeLogedinUserId()));
@@ -65,7 +63,6 @@ namespace Clay.Controllers
 
         [HttpGet]
         [ValidateViewModel]
-        [ServiceFilter(typeof(ExceptionFilter))]
         public async Task<IActionResult> GetLockHistory(GetLockHistoryModel model)
         {
             if (!await CanUserAccess(GeLogedinUserId(), model.LockId))
@@ -79,7 +76,6 @@ namespace Clay.Controllers
 
         [HttpPost]
         [ValidateViewModel]
-        [ServiceFilter(typeof(ExceptionFilter))]
         public async Task<IActionResult> Lock(LockActionModel model)
         {
             var loggedInUserId = GeLogedinUserId();
@@ -94,7 +90,6 @@ namespace Clay.Controllers
 
         [HttpPost]
         [ValidateViewModel]
-        [ServiceFilter(typeof(ExceptionFilter))]
         public async Task<IActionResult> UnLock(LockActionModel model)
         {
             var loggedInUserId = GeLogedinUserId();

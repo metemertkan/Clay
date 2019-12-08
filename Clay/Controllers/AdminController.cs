@@ -29,7 +29,6 @@ namespace Clay.Controllers
 
         [HttpGet]
         [PaginationCorrection(ParamName = Parameters.PAGEDMODEL)]
-        [ServiceFilter(typeof(ExceptionFilter))]
         public async Task<IActionResult> GetLocks(PagedModel pagedModel)
         {
             var result = await _unitOfWork.LockRepository.GetAll(pagedModel);
@@ -39,7 +38,6 @@ namespace Clay.Controllers
 
         [HttpPost]
         [ValidateViewModel]
-        [ServiceFilter(typeof(ExceptionFilter))]
         public async Task<IActionResult> SaveLock(Lock lockModel)
         {
             if (lockModel.Id == Guid.Empty)
@@ -57,7 +55,6 @@ namespace Clay.Controllers
 
         [HttpPost]
         [ValidateViewModel]
-        [ServiceFilter(typeof(ExceptionFilter))]
         public async Task<IActionResult> AssignUserToLock(UserLockModel model)
         {
             await _userLockManager.Assign(model.UserId, model.LockId);
@@ -67,7 +64,6 @@ namespace Clay.Controllers
 
         [HttpPost]
         [ValidateViewModel]
-        [ServiceFilter(typeof(ExceptionFilter))]
         public async Task<IActionResult> UnAssignUserFromLock(UserLockModel model)
         {
             await _userLockManager.UnAssign(model.UserId, model.LockId);
@@ -77,7 +73,6 @@ namespace Clay.Controllers
 
         [HttpGet]
         [PaginationCorrection(ParamName = Parameters.PAGEDMODEL)]
-        [ServiceFilter(typeof(ExceptionFilter))]
         public async Task<IActionResult> GetAttempts(PagedModel pagedModel)
         {
             var result = await _unitOfWork.AttemptRepository.GetAll(pagedModel);

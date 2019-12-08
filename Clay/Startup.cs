@@ -48,9 +48,9 @@ namespace Clay
             services.TryAddTransient<IUnitOfWork, UnitOfWork.Implementation.UnitOfWork>();
             services.TryAddTransient<IUserLockManager, UserLockManager>();
             services.TryAddTransient<PaginationCorrection>();
-            services.TryAddTransient<ExceptionFilter>();
 
-            services.AddMvc()
+
+            services.AddMvc(config => config.Filters.Add<ExceptionFilter>())
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddMvcOptions(options => options.AllowEmptyInputInBodyModelBinding = true);
 
@@ -81,7 +81,6 @@ namespace Clay
                     };
                 });
 
-            services.AddMemoryCache();
 
             services.AddSwaggerGen(c =>
             {

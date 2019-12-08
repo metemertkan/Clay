@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Clay.Filters;
 using Clay.Models.InputModels.Account;
@@ -26,7 +27,6 @@ namespace Clay.Controllers
 
         [HttpPost]
         [ValidateViewModel]
-        [ServiceFilter(typeof(ExceptionFilter))]
         public async Task<IActionResult> Login(LoginModel model)
         {
             IActionResult response = Unauthorized();
