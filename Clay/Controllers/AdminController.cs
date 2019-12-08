@@ -6,9 +6,11 @@ using Clay.Filters;
 using Clay.Managers.Interfaces;
 using Clay.Models.Domain;
 using Clay.Models.InputModels.Admin;
+using Clay.Services;
 using Clay.UnitOfWork.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
 namespace Clay.Controllers

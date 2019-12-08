@@ -47,7 +47,6 @@ namespace Clay
 
             services.TryAddTransient<IUnitOfWork, UnitOfWork.Implementation.UnitOfWork>();
             services.TryAddTransient<IUserLockManager, UserLockManager>();
-            services.TryAddTransient<CustomCacheActionFilter>();
             services.TryAddTransient<PaginationCorrection>();
             services.TryAddTransient<ExceptionFilter>();
 
