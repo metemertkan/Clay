@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Clay.Constants;
 using Clay.Controllers;
@@ -122,7 +123,11 @@ namespace Clay.Tests
         private void SetupUser(ClayControllerBase controller, string username)
         {
             var mockContext = new Mock<HttpContext>(MockBehavior.Strict);
-            mockContext.SetupGet(hc => hc.User.Identity.Name).Returns(username);
+            mockContext.SetupGet(hc => hc.User.Claims).Returns(new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier,Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Name,"f00")
+            });
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = mockContext.Object
@@ -143,7 +148,7 @@ namespace Clay.Tests
                         return _userLockList;
                     });
 
-            var target = new UserController(_userMgr.Object, _unitOfWorkMock.Object, _userLockMock.Object);
+            var target = new UserController(_unitOfWorkMock.Object, _userLockMock.Object);
             SetupUser(target, "f00");
             //Act
 
@@ -172,7 +177,7 @@ namespace Clay.Tests
                         await Task.Yield();
                         return _attemptList;
                     });
-            var target = new UserController(_userMgr.Object,_unitOfWorkMock.Object,_userLockMock.Object);
+            var target = new UserController(_unitOfWorkMock.Object,_userLockMock.Object);
             SetupUser(target,"f00");
             //Act
             var result = target.GetMyHistory(_defaultPagedModel).Result as OkObjectResult;
@@ -207,7 +212,7 @@ namespace Clay.Tests
                         await Task.Yield();
                         return _attemptList;
                     });
-            var target = new UserController(_userMgr.Object, _unitOfWorkMock.Object, _userLockMock.Object);
+            var target = new UserController(_unitOfWorkMock.Object, _userLockMock.Object);
             SetupUser(target, "f00");
             //Act
             //Assert
@@ -236,7 +241,7 @@ namespace Clay.Tests
                 return true;
             });
 
-            var target = new UserController(_userMgr.Object, _unitOfWorkMock.Object, _userLockMock.Object);
+            var target = new UserController( _unitOfWorkMock.Object, _userLockMock.Object);
             SetupUser(target, "f00");
 
             _unitOfWorkMock.Setup(u => u.LockRepository.Lock(It.IsAny<Lock>())).Returns(async () =>
@@ -274,7 +279,7 @@ namespace Clay.Tests
                 return true;
             });
             
-            var target = new UserController(_userMgr.Object, _unitOfWorkMock.Object, _userLockMock.Object);
+            var target = new UserController(_unitOfWorkMock.Object, _userLockMock.Object);
             SetupUser(target, "f00");
 
             _unitOfWorkMock.Setup(u => u.LockRepository.Unlock(It.IsAny<Lock>())).Returns(async () =>

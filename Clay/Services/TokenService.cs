@@ -20,12 +20,13 @@ namespace Clay.Services
             JwtIssuer = jwtIssuer;
         }
 
-        public string GenerateToken(string username,string rolename)
+        public string GenerateToken(string username,string id,string rolename)
         {
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name,username),
-                new Claim(ClaimTypes.Role,rolename)
+                new Claim(ClaimTypes.Role,rolename),
+                new Claim(ClaimTypes.NameIdentifier,id) 
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

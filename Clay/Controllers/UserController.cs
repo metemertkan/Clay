@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Clay.Constants;
 using Clay.Data.Pagination;
+using Clay.Filters;
 using Clay.Managers.Interfaces;
 using Clay.Models.Domain;
 using Clay.Models.InputModels.Admin;
@@ -15,30 +18,21 @@ namespace Clay.Controllers
     [Authorize(Roles = "User, Administrator")]
     public class UserController : ClayControllerBase
     {
-        private readonly UserManager<AppIdentityUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserLockManager _userLockManager
             ;
 
-        public UserController(UserManager<AppIdentityUser> userManager, IUnitOfWork unitOfWork, IUserLockManager userLockManager)
+        public UserController(IUnitOfWork unitOfWork, IUserLockManager userLockManager)
         {
-            _userManager = userManager;
             _unitOfWork = unitOfWork;
             _userLockManager = userLockManager;
         }
 
         [HttpGet]
+        [PaginationCorrection(ParamName = Parameters.PAGEDMODEL)]
         public async Task<IActionResult> GetMyLocks(PagedModel pagedModel)
         {
-            var loggedInUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
-
-            if (loggedInUser == null)
-                return Unauthorized();
-
-            if (pagedModel == null)
-                pagedModel = new PagedModel();
-
-            var userLocks = await _unitOfWork.UserLockRepository.SearchBy(pagedModel, ul => ul.UserId.Equals(loggedInUser.Id), ul => ul.Lock);
+            var userLocks = await _unitOfWork.UserLockRepository.SearchBy(pagedModel, ul => ul.UserId.Equals(GeLogedinUserId()), ul => ul.Lock);
 
             var list = new PagedResult<Lock>();
             foreach (var userLock in userLocks.Results)
@@ -61,29 +55,20 @@ namespace Clay.Controllers
         }
 
         [HttpGet]
+        [PaginationCorrection(ParamName = Parameters.PAGEDMODEL)]
         public async Task<IActionResult> GetMyHistory(PagedModel pagedModel)
         {
-            var loggedInUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
-
-            if (loggedInUser == null)
-                return Unauthorized();
-
             if (pagedModel == null)
                 pagedModel = new PagedModel();
 
-            var results = await _unitOfWork.AttemptRepository.SearchBy(pagedModel, a => a.UserId.Equals(loggedInUser.Id));
+            var results = await _unitOfWork.AttemptRepository.SearchBy(pagedModel, a => a.UserId.Equals(GeLogedinUserId()));
             return Ok(results);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetLockHistory(GetLockHistoryModel model)
         {
-            var loggedInUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
-
-            if (loggedInUser == null)
-                return Unauthorized();
-
-            if (!await CanUserAccess(loggedInUser, model.LockId))
+            if (!await CanUserAccess(GeLogedinUserId(), model.LockId))
                 return Unauthorized();
 
             if (model.PagedModel == null)
@@ -95,13 +80,9 @@ namespace Clay.Controllers
         [HttpPost]
         public async Task<IActionResult> Lock(LockActionModel model)
         {
-            var loggedInUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
+            var loggedInUserId = GeLogedinUserId();
 
-            if (loggedInUser == null)
-                return Unauthorized();
-
-
-            if (!await CanUserAccess(loggedInUser, model.LockId))
+            if (!await CanUserAccess(loggedInUserId, model.LockId))
                 return Unauthorized();
 
             var attempt = new Attempt
@@ -110,7 +91,7 @@ namespace Clay.Controllers
                 IsSuccessful = true,
                 LockId = model.LockId,
                 Time = DateTime.Now,
-                UserId = loggedInUser.Id
+                UserId = loggedInUserId
             };
 
             var lockActionResult = await _unitOfWork.LockRepository.Lock(new Lock { Id = model.LockId });
@@ -131,12 +112,9 @@ namespace Clay.Controllers
         [HttpPost]
         public async Task<IActionResult> UnLock(LockActionModel model)
         {
-            var loggedInUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
+            var loggedInUserId = GeLogedinUserId();
 
-            if (loggedInUser == null)
-                return Unauthorized();
-
-            if (!await CanUserAccess(loggedInUser, model.LockId))
+            if (!await CanUserAccess(loggedInUserId, model.LockId))
                 return Unauthorized();
 
             var attempt = new Attempt
@@ -145,7 +123,7 @@ namespace Clay.Controllers
                 IsSuccessful = true,
                 LockId = model.LockId,
                 Time = DateTime.Now,
-                UserId = loggedInUser.Id
+                UserId = loggedInUserId
             };
 
             var lockActionResult = await _unitOfWork.LockRepository.Unlock(new Lock { Id = model.LockId });
@@ -163,9 +141,14 @@ namespace Clay.Controllers
             return Ok(true);
         }
 
-        private async Task<bool> CanUserAccess(AppIdentityUser loggedInUser, Guid lockId)
+        private async Task<bool> CanUserAccess(string userId, Guid lockId)
         {
-            return await _userLockManager.CanAccess(loggedInUser.Id, lockId);
+            return await _userLockManager.CanAccess(userId, lockId);
+        }
+
+        private string GeLogedinUserId()
+        {
+            return User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier))?.Value;
         }
     }
 }

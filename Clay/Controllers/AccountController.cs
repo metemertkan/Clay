@@ -42,7 +42,7 @@ namespace Clay.Controllers
                 _configuration.GetSection("Jwt").GetSection("Issuer").Value
             );
             var role = (await userManager.GetRolesAsync(logedinUser)).FirstOrDefault();
-            var token = tokenService.GenerateToken(model.Username, role);
+            var token = tokenService.GenerateToken(model.Username,logedinUser.Id, role);
             var responseModel = new LoginResponseModel { Id = logedinUser.Id, Username = logedinUser.UserName, Token = token };
             response = Ok(responseModel);
 

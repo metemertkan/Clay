@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Clay.Constants;
 using Clay.Data.Pagination;
+using Clay.Filters;
 using Clay.Managers.Interfaces;
 using Clay.Models.Domain;
 using Clay.Models.InputModels.Admin;
@@ -26,12 +28,9 @@ namespace Clay.Controllers
         }
 
         [HttpGet]
-        //[ServiceFilter(typeof(CustomCacheActionFilter))]
+        [PaginationCorrection(ParamName = Parameters.PAGEDMODEL)]
         public async Task<IActionResult> GetLocks(PagedModel pagedModel)
         {
-            if (pagedModel == null)
-                pagedModel = new PagedModel();
-
             var result = await _unitOfWork.LockRepository.GetAll(pagedModel);
 
             return Ok(result);
@@ -83,12 +82,9 @@ namespace Clay.Controllers
         }
 
         [HttpGet]
-        //[ServiceFilter(typeof(CustomCacheActionFilter))]
+        [PaginationCorrection(ParamName = Parameters.PAGEDMODEL)]
         public async Task<IActionResult> GetAttempts(PagedModel pagedModel)
         {
-            if (pagedModel == null)
-                pagedModel = new PagedModel();
-
             var result = await _unitOfWork.AttemptRepository.GetAll(pagedModel);
 
             return Ok(result);
