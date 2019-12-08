@@ -31,13 +31,11 @@ namespace Clay.Repositories.Implementations
 
             if (foundLock == null)
             {
-                //log lock not found
                 return Task.FromResult(false);
             }
 
             if (foundLock.IsLocked == @lock)
             {
-                //log lock is already in that state
                 return Task.FromResult(false);
             }
 
