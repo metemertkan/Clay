@@ -160,7 +160,7 @@ namespace Clay.Tests
 
             //Act
             var target = new AdminController(_logger.Object, _unitOfWorkMock.Object, _userLockMock.Object);
-            var result = target.AssignUserToLock(userLockModel).Result as OkObjectResult;
+            var result = target.AssignUserToLock(userLockModel).Result as OkResult;
 
             //Assert
             Assert.NotNull(result);
@@ -185,7 +185,7 @@ namespace Clay.Tests
 
             //Act
             var target = new AdminController(_logger.Object, _unitOfWorkMock.Object, _userLockMock.Object);
-            var result = target.UnAssignUserFromLock(userLockModel).Result as OkObjectResult;
+            var result = target.UnAssignUserFromLock(userLockModel).Result as OkResult;
 
             //Assert
             Assert.NotNull(result);

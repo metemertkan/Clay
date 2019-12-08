@@ -49,13 +49,13 @@ namespace Clay.Tests
                .AddInMemoryCollection(myConfiguration)
                .Build();
 
-            _tokenService= new TokenService(_configuration["Jwt:Key"], _configuration["Jwt:Issuer"]);
+            _tokenService = new TokenService(_configuration["Jwt:Key"], _configuration["Jwt:Issuer"]);
 
-            
+
         }
 
         [Test]
-        public void Login_Should_Return_Token()
+        public void Valid_Login_Should_Return_Token()
         {
             //Arrange
             _signInManager.Setup(sim =>
@@ -65,9 +65,9 @@ namespace Clay.Tests
 
 
             var target = new AccountController(_userMgr.Object, _signInManager.Object, _configuration);
-            
 
-            var roleList = new List<string> {"User"};
+
+            var roleList = new List<string> { "User" };
 
             _userMgr.Setup(um => um.GetRolesAsync(It.IsAny<AppIdentityUser>())).Returns(
                 async () =>
@@ -76,20 +76,41 @@ namespace Clay.Tests
                     return roleList;
                 });
 
-            
+
             //Act
             var loginModel = new LoginModel { Username = "test", Password = "test" };
             var okObjectResult = target.Login(loginModel).Result as OkObjectResult;
 
             //Assert
-            if(okObjectResult==null)
+            if (okObjectResult == null)
                 Assert.True(false);
             var loginResponseModel = okObjectResult.Value as LoginResponseModel;
             Assert.NotNull(loginResponseModel);
-            Assert.AreEqual("f00",loginResponseModel.Id);
-            Assert.AreEqual("f00",loginResponseModel.Username);
+            Assert.AreEqual("f00", loginResponseModel.Id);
+            Assert.AreEqual("f00", loginResponseModel.Username);
             Assert.IsNotEmpty(loginResponseModel.Token);
 
         }
+        [Test]
+        public void Invalid_Login_Should_Return_Unauthorized()
+        {
+            //Arrange
+            _signInManager.Setup(sim =>
+                    sim.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), false, false))
+                .Returns(Task.FromResult(SignInResult.Failed));
+            var target = new AccountController(_userMgr.Object, _signInManager.Object, _configuration);
+            //Act
+            var loginModel = new LoginModel { Username = "test", Password = "test" };
+            var unauthorizedResult = target.Login(loginModel).Result as UnauthorizedResult;
+
+            //Assert
+            if (unauthorizedResult == null)
+                Assert.True(false);
+            //Assert
+            Assert.AreEqual(401,unauthorizedResult.StatusCode);
+
+        }
+
+     
     }
 }

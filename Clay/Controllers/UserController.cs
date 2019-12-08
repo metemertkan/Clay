@@ -59,6 +59,7 @@ namespace Clay.Controllers
         public async Task<IActionResult> GetMyHistory(PagedModel pagedModel)
         {
             var results = await _unitOfWork.AttemptRepository.SearchBy(pagedModel, a => a.UserId.Equals(GeLogedinUserId()));
+
             return Ok(results);
         }
 
@@ -98,16 +99,25 @@ namespace Clay.Controllers
             if (!await CanUserAccess(loggedInUserId, model.LockId))
                 return Unauthorized();
 
-            var result = await ExecuteAction(model.LockId, loggedInUserId,Actions.UNLOCK);
+            var result = await ExecuteAction(model.LockId, loggedInUserId, Actions.UNLOCK);
 
             return result ? (IActionResult)Ok() : BadRequest();
         }
 
         private async Task<bool> ExecuteAction(Guid lockId, string loggedInUserId, string action)
         {
-            var unlockActionResult = await _unitOfWork.LockRepository.Unlock(new Lock { Id = lockId });
+            bool actionResult;
+            if (action.Equals(Actions.LOCK))
+            {
+                actionResult = await _unitOfWork.LockRepository.Lock(new Lock { Id = lockId });
+            }
+            else
+            {
+                actionResult = await _unitOfWork.LockRepository.Unlock(new Lock { Id = lockId });
+            }
 
-            if (!unlockActionResult)
+
+            if (!actionResult)
             {
                 await CreateAttempt(action, false, lockId, loggedInUserId);
                 await _unitOfWork.Save();

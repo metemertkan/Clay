@@ -258,7 +258,7 @@ namespace Clay.Tests
             });
             //Act
             var lockModel=new LockActionModel{LockId = new Guid()};
-            var result = target.Lock(lockModel).Result as OkObjectResult;
+            var result = target.Lock(lockModel).Result as OkResult;
             
             //Assert
             if (result == null)
@@ -296,7 +296,7 @@ namespace Clay.Tests
             });
             //Act
             var lockModel = new LockActionModel { LockId = new Guid() };
-            var result = target.UnLock(lockModel).Result as OkObjectResult;
+            var result = target.UnLock(lockModel).Result as OkResult;
 
             //Assert
             if (result == null)
