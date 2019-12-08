@@ -17,12 +17,10 @@ namespace Clay.Controllers
     public class AdminController : ClayControllerBase
     {
         private readonly IUserLockManager _userLockManager;
-        private readonly ILogger<AdminController> _log;
         private readonly IUnitOfWork _unitOfWork;
 
-        public AdminController(ILogger<AdminController> log, IUnitOfWork unitOfWork, IUserLockManager userLockManager)
+        public AdminController(IUnitOfWork unitOfWork, IUserLockManager userLockManager)
         {
-            _log = log;
             _unitOfWork = unitOfWork;
             _userLockManager = userLockManager;
         }

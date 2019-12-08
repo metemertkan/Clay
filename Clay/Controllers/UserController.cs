@@ -10,7 +10,6 @@ using Clay.Models.Domain;
 using Clay.Models.InputModels.Admin;
 using Clay.UnitOfWork.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Clay.Controllers
@@ -20,7 +19,6 @@ namespace Clay.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserLockManager _userLockManager;
-        private readonly Attempt _attempt;
 
         public UserController(IUnitOfWork unitOfWork, IUserLockManager userLockManager)
         {

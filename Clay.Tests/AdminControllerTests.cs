@@ -18,7 +18,6 @@ namespace Clay.Tests
 {
     public class AdminControllerTests
     {
-        private Mock<ILogger<AdminController>> _logger;
         private Mock<IUnitOfWork> _unitOfWorkMock;
         private Mock<IUserLockManager> _userLockMock;
         private PagedModel _defaultPagedModel;
@@ -28,7 +27,6 @@ namespace Clay.Tests
         [SetUp]
         public void Setup()
         {
-            _logger = new Mock<ILogger<AdminController>>();
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _userLockMock = new Mock<IUserLockManager>();
             _defaultPagedModel = new PagedModel();
@@ -76,7 +74,7 @@ namespace Clay.Tests
                 return _lockList;
             });
             //Act
-            var target = new AdminController(_logger.Object, _unitOfWorkMock.Object, _userLockMock.Object);
+            var target = new AdminController(_unitOfWorkMock.Object, _userLockMock.Object);
             var okResult = target.GetLocks(_defaultPagedModel).Result as OkObjectResult;
             if (okResult == null)
                 Assert.IsTrue(false);
@@ -104,7 +102,7 @@ namespace Clay.Tests
             _unitOfWorkMock.Setup(x => x.LockRepository.Add(newLock)).Returns(async () => { return true; });
 
             //Act
-            var target = new AdminController(_logger.Object, _unitOfWorkMock.Object, _userLockMock.Object);
+            var target = new AdminController(_unitOfWorkMock.Object, _userLockMock.Object);
 
             target.SaveLock(newLock).Wait();
 
@@ -135,7 +133,7 @@ namespace Clay.Tests
             });
 
             //Act
-            var target = new AdminController(_logger.Object, _unitOfWorkMock.Object, _userLockMock.Object);
+            var target = new AdminController(_unitOfWorkMock.Object, _userLockMock.Object);
             target.SaveLock(newLock);
 
             //Assert
@@ -159,7 +157,7 @@ namespace Clay.Tests
             });
 
             //Act
-            var target = new AdminController(_logger.Object, _unitOfWorkMock.Object, _userLockMock.Object);
+            var target = new AdminController(_unitOfWorkMock.Object, _userLockMock.Object);
             var result = target.AssignUserToLock(userLockModel).Result as OkResult;
 
             //Assert
@@ -184,7 +182,7 @@ namespace Clay.Tests
             });
 
             //Act
-            var target = new AdminController(_logger.Object, _unitOfWorkMock.Object, _userLockMock.Object);
+            var target = new AdminController(_unitOfWorkMock.Object, _userLockMock.Object);
             var result = target.UnAssignUserFromLock(userLockModel).Result as OkResult;
 
             //Assert
@@ -203,7 +201,7 @@ namespace Clay.Tests
             });
 
             //Act
-            var target = new AdminController(_logger.Object, _unitOfWorkMock.Object, _userLockMock.Object);
+            var target = new AdminController(_unitOfWorkMock.Object, _userLockMock.Object);
             var okResult = target.GetAttempts(_defaultPagedModel).Result as OkObjectResult;
             if (okResult == null)
                 Assert.IsTrue(false);

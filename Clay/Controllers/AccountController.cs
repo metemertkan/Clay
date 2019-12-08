@@ -13,9 +13,9 @@ namespace Clay.Controllers
 {
     public class AccountController : ClayControllerBase
     {
-        private UserManager<AppIdentityUser> userManager;
-        private SignInManager<AppIdentityUser> signInManager;
-        private IConfiguration _configuration;
+        private readonly UserManager<AppIdentityUser> userManager;
+        private readonly SignInManager<AppIdentityUser> signInManager;
+        private readonly IConfiguration _configuration;
 
         public AccountController(UserManager<AppIdentityUser> userManager, SignInManager<AppIdentityUser> signInManager, IConfiguration configuration)
         {
