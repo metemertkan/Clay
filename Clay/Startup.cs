@@ -49,6 +49,7 @@ namespace Clay
             services.TryAddTransient<IUserLockManager, UserLockManager>();
             services.TryAddTransient<CustomCacheActionFilter>();
             services.TryAddTransient<PaginationCorrection>();
+            services.TryAddTransient<ExceptionFilter>();
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)

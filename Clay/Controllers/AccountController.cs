@@ -26,6 +26,7 @@ namespace Clay.Controllers
 
         [HttpPost]
         [ValidateViewModel]
+        [ServiceFilter(typeof(ExceptionFilter))]
         public async Task<IActionResult> Login(LoginModel model)
         {
             IActionResult response = Unauthorized();
