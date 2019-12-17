@@ -18,7 +18,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
 
 namespace Clay
 {
@@ -53,6 +52,12 @@ namespace Clay
             services.AddMvc(config => config.Filters.Add<ExceptionFilter>())
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddMvcOptions(options => options.AllowEmptyInputInBodyModelBinding = true);
+
+            services.AddDistributedRedisCache(option =>
+            {
+                option.Configuration = "192.168.1.110:6379";
+                option.InstanceName = "master";
+            });
 
             services.AddEntityFrameworkSqlServer()
                 .AddDbContext<WebDbContext>

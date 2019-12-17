@@ -4,12 +4,13 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Clay.Data;
 using Clay.Data.Pagination;
+using Clay.Models.Domain;
 using Clay.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Clay.Repositories.Implementations
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : class
+    public class BaseRepository<T> : IBaseRepository<T> where T : class, IModel
     {
         private WebDbContext _ctx;
 

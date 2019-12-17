@@ -2,10 +2,11 @@
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Clay.Data.Pagination;
+using Clay.Models.Domain;
 
 namespace Clay.Repositories.Interfaces
 {
-    public interface IBaseRepository<T> where T : class
+    public interface IBaseRepository<T> where T : class, IModel
     {
         Task<bool> Add(T entity);
 

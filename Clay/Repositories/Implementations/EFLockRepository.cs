@@ -7,7 +7,7 @@ using Clay.Repositories.Interfaces;
 
 namespace Clay.Repositories.Implementations
 {
-    public class EFLockRepository : BaseRepository<Lock>,ILockRepository
+    public class EFLockRepository : BaseRepository<Lock>, ILockRepository
     {
         private WebDbContext _context;
         public EFLockRepository(WebDbContext context) : base(context)

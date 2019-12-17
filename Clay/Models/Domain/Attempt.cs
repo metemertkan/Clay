@@ -2,7 +2,7 @@
 
 namespace Clay.Models.Domain
 {
-    public class Attempt
+    public class Attempt : IModel
     {
         public long Id { get; set; }
         public Guid LockId { get; set; }

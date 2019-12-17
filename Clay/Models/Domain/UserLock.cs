@@ -2,7 +2,7 @@
 
 namespace Clay.Models.Domain
 {
-    public class UserLock
+    public class UserLock : IModel
     {
         public string UserId { get; set; }
         public AppIdentityUser User { get; set; }

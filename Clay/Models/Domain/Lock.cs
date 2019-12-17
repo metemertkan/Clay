@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Clay.Models.Domain
 {
-    public class Lock
+    public class Lock : IModel
     {
         public Guid Id { get; set; }
         [Required]
