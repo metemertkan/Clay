@@ -55,7 +55,7 @@ namespace Clay
 
             services.AddDistributedRedisCache(option =>
             {
-                option.Configuration = "192.168.1.110:6379";
+                option.Configuration = Configuration.GetSection("ServerIp").Value;
                 option.InstanceName = "master";
             });
 

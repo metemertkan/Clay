@@ -1,8 +1,10 @@
 ﻿using System;
+using Clay.Models.Domain.Base;
 
 namespace Clay.Models.Domain
 {
-    public class Attempt : IModel
+    [Serializable]
+    public class Attempt : BaseModel
     {
         public long Id { get; set; }
         public Guid LockId { get; set; }

@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Clay.Data.Pagination;
 using Clay.Models.Domain;
+using Clay.Models.Domain.Base;
 
 namespace Clay.Repositories.Interfaces
 {

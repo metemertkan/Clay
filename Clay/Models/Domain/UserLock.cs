@@ -1,8 +1,10 @@
 ﻿using System;
+using Clay.Models.Domain.Base;
 
 namespace Clay.Models.Domain
 {
-    public class UserLock : IModel
+    [Serializable]
+    public class UserLock : BaseModel
     {
         public string UserId { get; set; }
         public AppIdentityUser User { get; set; }

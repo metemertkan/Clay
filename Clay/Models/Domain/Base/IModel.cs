@@ -1,4 +1,4 @@
-﻿namespace Clay.Models.Domain
+﻿namespace Clay.Models.Domain.Base
 {
     public interface IModel
     {

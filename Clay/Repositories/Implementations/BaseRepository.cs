@@ -6,6 +6,7 @@ using Clay.Data;
 using Clay.Data.Pagination;
 using Clay.Helpers;
 using Clay.Models.Domain;
+using Clay.Models.Domain.Base;
 using Clay.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

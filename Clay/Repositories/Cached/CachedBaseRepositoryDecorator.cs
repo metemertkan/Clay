@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Clay.Helpers;
 using Clay.Models.Domain;
+using Clay.Models.Domain.Base;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace Clay.Repositories.Cached
@@ -24,34 +25,29 @@ namespace Clay.Repositories.Cached
 
         public async Task<bool> Add(T entity)
         {
-            var generatedKeys = CacheKeyHelper.GetKeysStartsWith(nameof(T));
-            await _distributedCache.InvalidateKeysAsync(generatedKeys);
-
-            throw new NotImplementedException();
+            await InvalidateCaches(typeof(T).Name);
+            return await _baseRepository.Add(entity);
         }
 
-        public Task<bool> Delete(Expression<Func<T, bool>> identity, params Expression<Func<T, object>>[] includes)
+        public async Task<bool> Delete(Expression<Func<T, bool>> identity, params Expression<Func<T, object>>[] includes)
         {
-            throw new NotImplementedException();
+            await InvalidateCaches(typeof(T).Name);
+            return await _baseRepository.Delete(identity, includes);
         }
 
-        public Task<bool> Delete(T entity)
+        public async Task<bool> Delete(T entity)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<T> FindBy(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
-        {
-            throw new NotImplementedException();
+            await InvalidateCaches(typeof(T).Name);
+            return await _baseRepository.Delete(entity);
         }
 
         public async Task<PagedResult<T>> GetAll(PagedModel pagedModel)
         {
             var generatedKey =
-                CacheKeyHelper.GenerateKeyWithPagination(nameof(T), pagedModel.Page, pagedModel.PageSize);
+                CacheKeyHelper.GenerateKeyWithPagination(typeof(T).Name, pagedModel.Page, pagedModel.PageSize);
 
             var cachedData = await _distributedCache.GetAsync<PagedResult<T>>(generatedKey);
-            if (cachedData != null)
+            if (cachedData != null && cachedData.Results.Count != 0)
                 return cachedData;
 
             var dbData = await _baseRepository.GetAll(pagedModel);
@@ -59,19 +55,34 @@ namespace Clay.Repositories.Cached
             return dbData;
         }
 
-        public Task<PagedResult<T>> GetAll(PagedModel pagedModel, params Expression<Func<T, object>>[] includes)
+        public async Task<PagedResult<T>> GetAll(PagedModel pagedModel, params Expression<Func<T, object>>[] includes)
         {
-            throw new NotImplementedException();
+            var dbData = await _baseRepository.GetAll(pagedModel, includes);
+            return dbData;
         }
 
-        public Task<PagedResult<T>> SearchBy(PagedModel pagedModel, Expression<Func<T, bool>> searchBy, params Expression<Func<T, object>>[] includes)
+        public async Task<PagedResult<T>> SearchBy(PagedModel pagedModel, Expression<Func<T, bool>> searchBy, params Expression<Func<T, object>>[] includes)
         {
-            throw new NotImplementedException();
+            var dbData = await _baseRepository.SearchBy(pagedModel, searchBy, includes);
+            return dbData;
         }
 
-        public Task<bool> Update(T entity)
+        public async Task<T> FindBy(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
         {
-            throw new NotImplementedException();
+            var dbData = await _baseRepository.FindBy(predicate, includes);
+            return dbData;
+        }
+
+        public async Task<bool> Update(T entity)
+        {
+            await InvalidateCaches(typeof(T).Name);
+            return await _baseRepository.Update(entity);
+        }
+
+        private async Task InvalidateCaches(string startsWith)
+        {
+            var generatedKeys = CacheKeyHelper.GetKeysStartsWith(startsWith);
+            await _distributedCache.InvalidateKeysAsync(generatedKeys);
         }
     }
 }

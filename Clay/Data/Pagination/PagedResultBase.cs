@@ -1,5 +1,8 @@
-﻿namespace Clay.Data.Pagination
+﻿using System;
+
+namespace Clay.Data.Pagination
 {
+    [Serializable]
     public abstract class PagedResultBase
     {
         public int CurrentPage { get; set; }

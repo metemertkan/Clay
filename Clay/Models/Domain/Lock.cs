@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Clay.Models.Domain.Base;
 
 namespace Clay.Models.Domain
 {
-    public class Lock : IModel
+    [Serializable]
+    public class Lock : BaseModel
     {
         public Guid Id { get; set; }
         [Required]
