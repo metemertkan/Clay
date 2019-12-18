@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Clay.Data.Pagination;
 using Microsoft.EntityFrameworkCore;
 
-namespace Clay.Data.Pagination
+namespace Clay.Helpers
 {
     public static class PagedResultEFCoreExtensions
     {

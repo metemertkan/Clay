@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Clay.Data;
 using Clay.Data.Pagination;
+using Clay.Helpers;
 using Clay.Models.Domain;
 using Clay.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
